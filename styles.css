@@ -89,43 +89,6 @@ h1 {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
-}
-
-.date-picker-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#date-picker {
-    padding: 10px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    cursor: pointer;
-}
-
-#date-picker::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-    cursor: pointer;
-}
-
-#go-to-date-btn {
-    padding: 10px 16px;
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-#go-to-date-btn:hover {
-    background-color: var(--primary-color);
-    color: var(--background-color);
 }
 
 .backup-container {
@@ -534,26 +497,12 @@ h1 {
     }
     
     .search-container {
-        flex-direction: column;
-        width: 100%;
+        flex-wrap: wrap;
     }
     
     .search-box {
-        width: 100%;
+        flex-grow: 1;
     }
-
-    .date-picker-container {
-        width: 100%;
-    }
-
-    #date-picker {
-        flex: 1;
-    }
-    
-    #go-to-date-btn {
-        white-space: nowrap;
-    }
-    
     .event-filters input {
         width: 100%;
     }

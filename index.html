@@ -3,21 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>U.S. President Schedule</title>
-    <script>
-        // Add timestamp to resource URLs to prevent caching
-        function addTimestamp(url) {
-            return url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
-        }
-        // Dynamically load CSS with timestamp
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = addTimestamp('styles.css');
-        document.head.appendChild(link);
-    </script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -43,11 +30,6 @@
                 <div class="stat-label">Events with Foreign Diplomats</div>
             </div>
             <div class="stat-box">
-                <div class="stat-number" id="weekday-golf-count">0</div>
-                <div class="stat-label">Days played golf</div>
-                <div class="stat-detail">(During work hours)</div>
-            </div>
-            <div class="stat-box">
                 <div class="stat-number" id="lid-hours">0</div>
                 <div class="stat-label">Hours Under "<a href="https://www.quora.com/What-does-the-White-House-means-when-they-say-%E2%80%9Cthats-a-lid%E2%80%9D-to-the-press-What-did-they-mean-by-this-on-the-West-Wing" target="_blank" rel="noopener noreferrer" title="Lid is a term used by the White House to describe when the President is not available to the press. It is a reference to the fact that the President is often in the 'Lid' when they are not available to the press.">Lid</a>"</div>
                 <div class="stat-detail" id="lid-avg">Avg: 0h 0m per day</div>
@@ -60,10 +42,6 @@
                     <button id="clear-search" class="clear-button" title="Clear search">×</button>
                 </div>
                 <button id="search-btn">Search</button>
-                <div class="date-picker-container">
-                    <input type="date" id="date-picker" title="Jump to date">
-                    <button id="go-to-date-btn" title="Go to selected date">Go to Date</button>
-                </div>
             </div>
             <div class="backup-container">
                 <span id="backup-status" class="backup-status"></span>
@@ -89,11 +67,6 @@
         <p class="timestamp" id="last-updated"></p>
     </div>
 
-    <script>
-        // Load main script with timestamp
-        const script = document.createElement('script');
-        script.src = addTimestamp('script.js');
-        document.body.appendChild(script);
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

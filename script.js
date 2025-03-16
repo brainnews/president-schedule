@@ -26,37 +26,16 @@ const paginationElement = document.getElementById('pagination');
 const prevButton = document.getElementById('prev-btn');
 const nextButton = document.getElementById('next-btn');
 const pageInfoElement = document.getElementById('page-info');
-const datePicker = document.getElementById('date-picker');
-const goToDateButton = document.getElementById('go-to-date-btn');
 // DOM elements for statistics
 const statsContainer = document.getElementById('stats-container');
 const marAlagoCountElement = document.getElementById('maralago-count');
-const weekdayGolfCountElement = document.getElementById('weekday-golf-count');
+const firstLadyCountElement = document.getElementById('firstlady-count');
 const diplomatsCountElement = document.getElementById('diplomats-count');
 const lidHoursElement = document.getElementById('lid-hours');
 const lidAvgElement = document.getElementById('lid-avg');
 const daysInOfficeCountElement = document.getElementById('days-in-office-count');
 
-// List of federal holidays for 2024-2025
-const federalHolidays = [
-    '2024-01-01', // New Year's Day
-    '2024-01-15', // Martin Luther King Jr. Day
-    '2024-02-19', // Presidents Day
-    '2024-05-27', // Memorial Day
-    '2024-06-19', // Juneteenth
-    '2024-07-04', // Independence Day
-    '2024-09-02', // Labor Day
-    '2024-10-14', // Columbus Day
-    '2024-11-11', // Veterans Day
-    '2024-11-28', // Thanksgiving Day
-    '2024-12-25', // Christmas Day
-    '2025-01-01', // New Year's Day
-    '2025-01-20', // Martin Luther King Jr. Day
-    '2025-02-17', // Presidents Day
-    '2025-05-26', // Memorial Day
-    '2025-06-19', // Juneteenth
-    '2025-07-04', // Independence Day
-];
+
 
 // Auto backup state
 let autoBackupEnabled = localStorage.getItem('autoBackupEnabled') === 'true';
@@ -328,56 +307,6 @@ function updatePagination() {
     paginationElement.style.display = totalPages > 1 ? 'flex' : 'none';
 }
 
-// Navigate to specific date
-function navigateToDate(dateString) {
-    // Find the page containing the selected date
-    const selectedDate = new Date(dateString + 'T00:00:00');
-    let targetPage = 1;
-    let foundDate = false;
-
-    // Loop through pages to find the one containing the selected date
-    const totalPages = Math.ceil(state.filteredEvents.length / state.eventsPerPage);
-    for (let page = 1; page <= totalPages; page++) {
-        const startIndex = (page - 1) * state.eventsPerPage;
-        const endIndex = startIndex + state.eventsPerPage;
-        const pageEvents = state.filteredEvents.slice(startIndex, endIndex);
-
-        // Check if any event on this page matches the selected date
-        for (const event of pageEvents) {
-            const eventDate = new Date(event.date + 'T00:00:00');
-            if (eventDate.toDateString() === selectedDate.toDateString()) {
-                targetPage = page;
-                foundDate = true;
-                break;
-            }
-        }
-        if (foundDate) break;
-    }
-
-    if (!foundDate) {
-        alert('No events found for the selected date');
-        return;
-    }
-
-    // Navigate to the target page
-    state.currentPage = targetPage;
-    renderEvents();
-    updatePagination();
-    scrollToEventsContainer();
-
-    // Highlight the date section (temporary visual feedback)
-    setTimeout(() => {
-        const dateSection = document.querySelector('.event-date-section');
-        if (dateSection) {
-            dateSection.style.transition = 'background-color 0.3s ease';
-            dateSection.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-            setTimeout(() => {
-                dateSection.style.backgroundColor = '';
-            }, 1000);
-        }
-    }, 100);
-}
-
 // Initialize search functionality
 function initializeFilters() {
     // Set up event listeners
@@ -414,22 +343,11 @@ function initializeFilters() {
     // Initialize backup button state
     updateBackupButtonState();
 
-    // Helper function to scroll to events container smoothly
-    const scrollToEventsContainer = () => {
-        const yOffset = -20; // Add a small offset for visual padding
-        const y = eventsContainer.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({
-            top: y,
-            behavior: 'smooth'
-        });
-    };
-
     prevButton.addEventListener('click', () => {
         if (state.currentPage > 1) {
             state.currentPage--;
             renderEvents();
             updatePagination();
-            scrollToEventsContainer();
         }
     });
 
@@ -439,32 +357,8 @@ function initializeFilters() {
             state.currentPage++;
             renderEvents();
             updatePagination();
-            scrollToEventsContainer();
         }
     });
-
-    // Set up date navigation
-    goToDateButton.addEventListener('click', () => {
-        const selectedDate = datePicker.value;
-        if (selectedDate) {
-            navigateToDate(selectedDate);
-        }
-    });
-
-    datePicker.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && datePicker.value) {
-            navigateToDate(datePicker.value);
-        }
-    });
-
-    // Set date picker min/max based on available events
-    if (state.allEvents.length > 0) {
-        const dates = state.allEvents.map(event => event.date);
-        const minDate = dates.reduce((a, b) => a < b ? a : b);
-        const maxDate = dates.reduce((a, b) => a > b ? a : b);
-        datePicker.min = minDate;
-        datePicker.max = maxDate;
-    }
 }
 
 // Update UI based on loading/error state
@@ -674,30 +568,6 @@ function daysSince2025() {
     return Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 }
 
-// Function to check if a date is a weekend
-function isWeekend(dateString) {
-    const date = new Date(dateString + 'T12:00:00');
-    const day = date.getDay();
-    return day === 0 || day === 6; // 0 is Sunday, 6 is Saturday
-}
-
-// Function to check if a date is a federal holiday
-function isHoliday(dateString) {
-    return federalHolidays.includes(dateString);
-}
-
-// Function to check if text contains golf club references
-function containsGolfClubReference(text) {
-    const golfKeywords = [
-        'golf club',
-        'golf course',
-        'bedminster',
-        'trump golf'
-    ];
-    
-    const lowerText = text.toLowerCase();
-    return golfKeywords.some(keyword => lowerText.includes(keyword));
-}
 
 // Calculate lid time statistics
 function calculateLidTimeStatistics() {
@@ -769,12 +639,12 @@ function calculateLidTimeStatistics() {
 function calculateEventStatistics() {
     // Initialize counters
     let marALagoDays = 0;
-    let weekdayGolfDays = 0;
+    let firstLadyDays = 0;
     let diplomatDays = 0;
     
     // Create a Set to track unique days for each category
     const marALagoDates = new Set();
-    const weekdayGolfDates = new Set();
+    const firstLadyDates = new Set();
     const diplomatDates = new Set();
     
     // Analyze all events
@@ -796,16 +666,15 @@ function calculateEventStatistics() {
         ) {
             marALagoDates.add(dateKey);
         }
-
-        // Check for golf club visits on weekdays (excluding holidays)
+        
+        // Check for First Lady mentions
         if (
-            containsGolfClubReference(locationLower) || 
-            containsGolfClubReference(descriptionLower) ||
-            containsGolfClubReference(titleLower)
+            descriptionLower.includes('first lady') || 
+            descriptionLower.includes('melania trump') ||
+            titleLower.includes('first lady') || 
+            titleLower.includes('melania trump')
         ) {
-            if (!isWeekend(dateKey) && !isHoliday(dateKey)) {
-                weekdayGolfDates.add(dateKey);
-            }
+            firstLadyDates.add(dateKey);
         }
         
         // Check for foreign diplomat mentions
@@ -830,7 +699,7 @@ function calculateEventStatistics() {
     
     // Update counters with the number of unique days
     marALagoDays = marALagoDates.size;
-    weekdayGolfDays = weekdayGolfDates.size;
+    firstLadyDays = firstLadyDates.size;
     diplomatDays = diplomatDates.size;
     
     // Calculate lid time statistics
@@ -838,7 +707,7 @@ function calculateEventStatistics() {
     
     // Update UI with the counts
     marAlagoCountElement.textContent = marALagoDays;
-    weekdayGolfCountElement.textContent = weekdayGolfDays;
+    //firstLadyCountElement.textContent = firstLadyDays;
     diplomatsCountElement.textContent = diplomatDays;
     daysInOfficeCountElement.textContent = daysSince2025();
     
