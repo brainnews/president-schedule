@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>U.S. President Schedule</title>
+    <script>
+        // Add timestamp to resource URLs to prevent caching
+        function addTimestamp(url) {
+            return url + (url.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+        }
+        // Dynamically load CSS with timestamp
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = addTimestamp('styles.css');
+        document.head.appendChild(link);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>U.S. President Schedule</h1>
+            <p>Current U.S. President: <a href="https://en.wikipedia.org/wiki/Donald_Trump" target="_blank" rel="noopener noreferrer">Donald Trump</a></p>
+        </header>
+
+        <div id="status" class="status-message loading">
+            Loading events...
+        </div>
+        <div class="stats-container" id="stats-container" style="display: none;">
+            <div class="stat-box">
+                <div class="stat-number" id="days-in-office-count">0</div>
+                <div class="stat-label">Days in office</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="maralago-count">0</div>
+                <div class="stat-label">Days at Mar-a-Lago</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="diplomats-count">0</div>
+                <div class="stat-label">Events with Foreign Diplomats</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="weekday-golf-count">0</div>
+                <div class="stat-label">Days played golf</div>
+                <div class="stat-detail">(During work hours)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="lid-hours">0</div>
+                <div class="stat-label">Hours Under "<a href="https://www.quora.com/What-does-the-White-House-means-when-they-say-%E2%80%9Cthats-a-lid%E2%80%9D-to-the-press-What-did-they-mean-by-this-on-the-West-Wing" target="_blank" rel="noopener noreferrer" title="Lid is a term used by the White House to describe when the President is not available to the press. It is a reference to the fact that the President is often in the 'Lid' when they are not available to the press.">Lid</a>"</div>
+                <div class="stat-detail" id="lid-avg">Avg: 0h 0m per day</div>
+            </div>
+        </div>
+        <div class="event-filters" id="filters" style="display: none;">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="search" placeholder="Search events...">
+                    <button id="clear-search" class="clear-button" title="Clear search">×</button>
+                </div>
+                <button id="search-btn">Search</button>
+                <div class="date-picker-container">
+                    <input type="date" id="date-picker" title="Jump to date">
+                    <button id="go-to-date-btn" title="Go to selected date">Go to Date</button>
+                </div>
+            </div>
+            <div class="backup-container">
+                <span id="backup-status" class="backup-status"></span>
+                <button id="backup-btn" title="Toggle automatic backup">Auto Backup: OFF</button>
+            </div>
+        </div>
+
+        <div id="events">
+            <!-- Events will be loaded here -->
+        </div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+            <button id="prev-btn" disabled>Previous</button>
+            <span id="page-info" class="page-info">Page 1</span>
+            <button id="next-btn">Next</button>
+        </div>
+        <ul class="tips">
+            <li style="font-weight: bold;">Tips:</li>
+            <li>Enable automatic backup to save all data to your device every time you visit the site.</li>
+            <li>Look out for a "More information" link to learn more about the event and see video clips, transcripts, and other data.</li>
+            <li>The term "Lid" is used by the White House to describe when the President is not available to the press.</li>
+        </ul>
+        <p class="timestamp" id="last-updated"></p>
+    </div>
+
+    <script>
+        // Load main script with timestamp
+        const script = document.createElement('script');
+        script.src = addTimestamp('script.js');
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>
