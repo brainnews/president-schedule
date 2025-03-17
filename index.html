@@ -3,8 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>U.S. President Schedule</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Temporary styles to prevent flash of unstyled content */
+        body { 
+            visibility: hidden; 
+            background-color: #f5f5f5;
+        }
+        .js-loaded body { 
+            visibility: visible; 
+        }
+    </style>
+    <script>
+        // Check if we're running locally
+        const isLocalDevelopment = window.location.hostname === 'localhost' || 
+                                 window.location.hostname === '127.0.0.1' ||
+                                 window.location.protocol === 'file:';
+
+        // Fetch the latest commit hash from GitHub API (only in production)
+        async function getLatestCommitHash() {
+            if (isLocalDevelopment) {
+                return Date.now(); // Always use timestamp for local development
+            }
+
+            try {
+                const response = await fetch('https://api.github.com/repos/brainnews/president-schedule/commits/main');
+                const data = await response.json();
+                return data.sha;
+            } catch (error) {
+                console.error('Failed to fetch commit hash:', error);
+                return Date.now(); // Fallback to timestamp if GitHub API fails
+            }
+        }
+
+        // Add version to CSS and script URLs to bust cache
+        async function loadResources() {
+            const version = await getLatestCommitHash();
+            
+            // Add dynamic CSS
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'stylesheet';
+            linkElement.href = `styles.css?v=${version}`;
+            linkElement.onload = function() {
+                document.documentElement.classList.add('js-loaded');
+            };
+            document.head.appendChild(linkElement);
+            
+            // Add dynamic script
+            const scriptElement = document.createElement('script');
+            scriptElement.src = `script.js?v=${version}`;
+            // Initialize the app after script loads
+            scriptElement.onload = function() {
+                // Call the initialization function that's defined in script.js
+                if (typeof initializeApp === 'function') {
+                    initializeApp();
+                } else {
+                    console.error('Failed to initialize app: initializeApp function not found');
+                }
+            };
+            document.body.appendChild(scriptElement);
+
+            // Log environment info for debugging
+            if (isLocalDevelopment) {
+                console.log('Running in development mode - using timestamp for cache busting');
+            }
+        }
+
+        // Load resources when page loads
+        window.addEventListener('load', loadResources);
+    </script>
 </head>
 <body>
     <div class="container">
@@ -24,26 +94,21 @@
             <div class="stat-box">
                 <div class="stat-number" id="days-in-office-count">0</div>
                 <div class="stat-label">Days in office</div>
+                <div class="stat-detail">Since Jan 20, 2025</div>
             </div>
             <div class="stat-box">
-                <div class="stat-number" id="maralago-count">0</div>
-                <div class="stat-label">Days at Mar-a-Lago</div>
+                <div class="stat-number" id="maralago-count">$0</div>
+                <div class="stat-label">Mar-a-Lago Travel Cost</div>
+                <div class="stat-detail">$3.4M per round trip<sup>1</sup></div>
             </div>
             <div class="stat-box">
                 <div class="stat-number" id="golf-count">0</div>
-                <div class="stat-label">Weekday Golf Days</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number" id="firstlady-count">0</div>
-                <div class="stat-label">Events with First Lady</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number" id="diplomats-count">0</div>
-                <div class="stat-label">Events with Foreign Diplomats</div>
+                <div class="stat-label">Trump Property<sup>2</sup> Visits</div>
+                <div class="stat-detail">Excluding Weekends & Holidays</div>
             </div>
             <div class="stat-box">
                 <div class="stat-number" id="lid-hours">0</div>
-                <div class="stat-label">Hours Under "<a href="https://www.quora.com/What-does-the-White-House-means-when-they-say-%E2%80%9Cthats-a-lid%E2%80%9D-to-the-press-What-did-they-mean-by-this-on-the-West-Wing" target="_blank" rel="noopener noreferrer" title="Lid is a term used by the White House to describe when the President is not available to the press. It is a reference to the fact that the President is often in the 'Lid' when they are not available to the press.">Lid</a>"</div>
+                <div class="stat-label">Hours Under Lid<sup>3</sup></div>
                 <div class="stat-detail" id="lid-avg">Avg: 0h 0m per day</div>
             </div>
         </div>
@@ -76,9 +141,13 @@
             <li>Look out for a "More information" link to learn more about the event and see video clips, transcripts, and other data.</li>
             <li>The term "Lid" is used by the White House to describe when the President is not available to the press.</li>
         </ul>
+        <ul class="footnotes">
+            <li style="font-weight: bold;">Sources:</li>
+            <li><sup>1</sup> Estimated round trip cost to Mar-a-Lago is based on a <a href="https://www.gao.gov/products/gao-19-178" target="_blank" rel="noopener noreferrer">2017 report by the U.S. Government Accountability Office</a>.</li>
+            <li><sup>2</sup> A list of Trump-owned properties is available <a href="https://www.wsj.com/public/resources/documents/TrumpProperties.pdf" target="_blank" rel="noopener noreferrer">here</a>.</li>
+            <li><sup>3</sup> Lid is a term used by the White House to describe when the President is not available to the press. It is a reference to the fact that the President is often in the 'Lid' when they are not available to the press.</li>
+        </ul>
         <p class="timestamp" id="last-updated"></p>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>

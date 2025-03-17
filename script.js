@@ -1,3 +1,27 @@
+// Unregister any existing service workers to prevent caching
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+            registration.unregister();
+        }
+    });
+}
+
+// Clear browser cache for this domain
+function clearBrowserCache() {
+    if (caches) {
+        // Delete all caches for this domain
+        caches.keys().then(function(names) {
+            for (let name of names) {
+                caches.delete(name);
+            }
+        });
+    }
+}
+
+// Clear cache when the page loads
+clearBrowserCache();
+
 // State management
 const state = {
     allEvents: [],
@@ -31,8 +55,6 @@ const pageInfoElement = document.getElementById('page-info');
 const statsContainer = document.getElementById('stats-container');
 const marAlagoCountElement = document.getElementById('maralago-count');
 const golfCountElement = document.getElementById('golf-count');
-const firstLadyCountElement = document.getElementById('firstlady-count');
-const diplomatsCountElement = document.getElementById('diplomats-count');
 const lidHoursElement = document.getElementById('lid-hours');
 const lidAvgElement = document.getElementById('lid-avg');
 const daysInOfficeCountElement = document.getElementById('days-in-office-count');
@@ -567,7 +589,7 @@ function initializeStatsContainer() {
 }
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
     try {
         initializeStatsContainer();
         fetchCalendarData();
@@ -583,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
         errorElement.textContent = 'There was an error initializing the application. Please try refreshing the page.';
         document.querySelector('.container').prepend(errorElement);
     }
-});
+}
 
 // create a function that counts days since January 20, 2025
 function daysSince2025() {
@@ -660,19 +682,27 @@ function calculateLidTimeStatistics() {
     };
 }
 
+// Format currency for display
+function formatCurrency(amount) {
+    if (amount >= 1000000) {
+        return '$' + (amount / 1000000).toFixed(1) + 'M';
+    }
+    return '$' + amount.toLocaleString('en-US');
+}
+
 // Calculate event statistics
 function calculateEventStatistics() {
     // Initialize counters
-    let marALagoDays = 0;
+    let marALagoTrips = 0;
     let golfDays = 0;
-    let firstLadyDays = 0;
-    let diplomatDays = 0;
+    
+    // Cost per round trip to Mar-a-Lago
+    const COST_PER_TRIP = 3400000; // $3.4 million
     
     // Create a Set to track unique days for each category
     const marALagoDates = new Set();
     const golfDates = new Set();
-    const firstLadyDates = new Set();
-    const diplomatDates = new Set();
+    let lastMarALagoDate = null; // Track the last Mar-a-Lago visit to count trips
 
     // US Federal Holidays (2024)
     const holidays = new Set([
@@ -689,91 +719,146 @@ function calculateEventStatistics() {
         '2024-12-25', // Christmas Day
     ]);
     
+    // Sort events by date for trip counting
+    const sortedEvents = [...state.allEvents].sort((a, b) => 
+        new Date(a.date) - new Date(b.date)
+    );
+    
     // Analyze all events
-    state.allEvents.forEach(event => {
+    sortedEvents.forEach(event => {
         const dateKey = event.date.split('T')[0]; // Get just the date part
         const eventDate = new Date(`${dateKey}T12:00:00`);
-        const isWeekend = eventDate.getDay() === 0 || eventDate.getDay() === 6; // 0 is Sunday, 6 is Saturday
+        const isWeekend = eventDate.getDay() === 0 || eventDate.getDay() === 6;
         
         // Check for Mar-a-Lago mentions (case insensitive)
         const locationLower = (event.location || '').toLowerCase();
         const descriptionLower = (event.description || '').toLowerCase();
         const titleLower = (event.title || '').toLowerCase();
         
-        if (
+        const isMarALagoEvent = 
             locationLower.includes('mar-a-lago') || 
             locationLower.includes('mar a lago') ||
             descriptionLower.includes('mar-a-lago') || 
             descriptionLower.includes('mar a lago') ||
             titleLower.includes('mar-a-lago') || 
-            titleLower.includes('mar a lago')
-        ) {
+            titleLower.includes('mar a lago');
+
+        if (isMarALagoEvent) {
             marALagoDates.add(dateKey);
+            
+            // Count trips when there's a gap of more than 1 day between Mar-a-Lago visits
+            if (lastMarALagoDate) {
+                const daysBetween = Math.floor(
+                    (eventDate - new Date(lastMarALagoDate + 'T12:00:00')) / (1000 * 60 * 60 * 24)
+                );
+                if (daysBetween > 1) {
+                    marALagoTrips++; // Count as a new trip
+                }
+            } else {
+                marALagoTrips++; // First trip
+            }
+            lastMarALagoDate = dateKey;
         }
 
-        // Check for golf mentions on weekdays
-        if (!isWeekend && !holidays.has(dateKey) && (
-            locationLower.includes('golf') ||
-            descriptionLower.includes('golf') ||
-            titleLower.includes('golf') ||
-            locationLower.includes('national jupiter') || // Trump National Golf Club Jupiter
-            locationLower.includes('bedminster') || // Trump National Golf Club Bedminster
-            locationLower.includes('trump national') // Other Trump National Golf Clubs
-        )) {
-            golfDates.add(dateKey);
-        }
-        
-        // Check for First Lady mentions
-        if (
-            descriptionLower.includes('first lady') || 
-            descriptionLower.includes('melania trump') ||
-            titleLower.includes('first lady') || 
-            titleLower.includes('melania trump')
-        ) {
-            firstLadyDates.add(dateKey);
-        }
-        
-        // Check for foreign diplomat mentions
-        if (
-            descriptionLower.includes('diplomat') || 
-            descriptionLower.includes('ambassador') ||
-            descriptionLower.includes('foreign') ||
-            descriptionLower.includes('minister') ||
-            descriptionLower.includes('president of') ||
-            descriptionLower.includes('prime minister') ||
-            descriptionLower.includes('taoiseach') ||
-            descriptionLower.includes('bilateral') ||
-            titleLower.includes('diplomat') || 
-            titleLower.includes('ambassador') ||
-            titleLower.includes('foreign') ||
-            titleLower.includes('minister') ||
-            titleLower.includes('bilateral')
-        ) {
-            diplomatDates.add(dateKey);
+        // Check for Trump property visits on weekdays
+        if (!isWeekend && !holidays.has(dateKey)) {
+            // Trump Properties
+            const trumpProperties = {
+                golfClubs: [
+                    // US Golf Clubs
+                    'trump international golf club palm beach',
+                    'trump national golf club jupiter',
+                    'trump national golf club washington',
+                    'trump national doral',
+                    'trump national golf club colts neck',
+                    'trump national golf club westchester',
+                    'trump national golf club hudson valley',
+                    'trump national golf club bedminster',
+                    'trump national golf club philadelphia',
+                    'trump national golf club los angeles',
+                    'trump national golf club charlotte',
+                    // International Golf Clubs
+                    'trump international golf links aberdeen',
+                    'trump international golf links doonbeg',
+                    'trump turnberry',
+                ],
+                hotels: [
+                    // Hotels
+                    'albemarle estate',
+                    'trump winery',
+                    'trump international hotel tower new york',
+                    'trump international hotel tower chicago',
+                    'trump international hotel washington',
+                    'trump international hotel las vegas',
+                ],
+                otherProperties: [
+                    // Commercial Properties
+                    '40 wall street',
+                    'trump tower',
+                    'niketown',
+                    // Other Properties
+                    'trump vineyard estates',
+                    'mar-a-lago',
+                    'mar a lago',
+                    'estates at trump national los angeles',
+                    'le chateau des palmiers',
+                    'seven springs',
+                    'macleod house',
+                ],
+                // Common variations and shorthand references
+                commonVariations: [
+                    'trump national',
+                    'trump international',
+                    'trump golf',
+                    'trump hotel',
+                    'trump estate',
+                    'trump club',
+                    'bedminster',
+                    'doral',
+                    'turnberry',
+                    'doonbeg',
+                ]
+            };
+
+            // Check all property categories
+            const isAtTrumpProperty = [
+                ...trumpProperties.golfClubs,
+                ...trumpProperties.hotels,
+                ...trumpProperties.otherProperties,
+                ...trumpProperties.commonVariations
+            ].some(property => 
+                locationLower.includes(property) || 
+                descriptionLower.includes(property) || 
+                titleLower.includes(property)
+            );
+
+            if (isAtTrumpProperty) {
+                golfDates.add(dateKey);
+            }
         }
     });
     
+    // Add one final trip if there were any Mar-a-Lago visits (return trip)
+    if (lastMarALagoDate) {
+        marALagoTrips++;
+    }
+    
+    // Calculate total Mar-a-Lago travel cost
+    const totalTravelCost = marALagoTrips * COST_PER_TRIP;
+    
     // Update counters with the number of unique days
-    marALagoDays = marALagoDates.size;
+    marALagoTrips = marALagoDates.size;
     golfDays = golfDates.size;
-    firstLadyDays = firstLadyDates.size;
-    diplomatDays = diplomatDates.size;
     
     // Calculate lid time statistics
     const lidStats = calculateLidTimeStatistics();
     
     // Update UI with the counts
     if (marAlagoCountElement) {
-        marAlagoCountElement.textContent = marALagoDays;
+        marAlagoCountElement.textContent = formatCurrency(totalTravelCost);
     }
     if (golfCountElement) {
         golfCountElement.textContent = golfDays;
-    }
-    if (firstLadyCountElement) {
-        firstLadyCountElement.textContent = firstLadyDays;
-    }
-    if (diplomatsCountElement) {
-        diplomatsCountElement.textContent = diplomatDays;
     }
     if (daysInOfficeCountElement) {
         daysInOfficeCountElement.textContent = daysSince2025();
