@@ -881,3 +881,178 @@ function calculateEventStatistics() {
         statsContainer.style.display = 'flex';
     }
 }
+
+// Initialize the Mar-a-Lago specific page
+async function initializeMarALagoPage() {
+    // Check if we're on the Mar-a-Lago page
+    if (!document.getElementById('maralago-count')) {
+        return;
+    }
+
+    // Reset state properties instead of reassigning the state object
+    state.allEvents = [];
+    state.filteredEvents = [];
+    state.currentPage = 1;
+    state.eventsPerPage = 10;
+    state.totalPages = 1;
+    state.isLoading = false;
+    state.error = null;
+
+    // Initialize DOM elements
+    const statusElement = document.getElementById('status');
+    const lastUpdatedElement = document.getElementById('last-updated');
+    const daysInOfficeElement = document.getElementById('days-in-office-count');
+
+    try {
+        // Show loading state
+        if (statusElement) {
+            statusElement.textContent = 'Loading data...';
+            statusElement.className = 'status-message loading';
+        }
+
+        // Update days in office count
+        if (daysInOfficeElement) {
+            daysInOfficeElement.textContent = daysSince2025();
+        }
+
+        // Fetch events using the Cloudflare Worker URL
+        const workerUrl = 'https://where-is-the-president.miles-gilbert.workers.dev/';
+        const response = await fetch(workerUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Process the data, being more flexible with the structure
+        let events = [];
+        
+        // Check for different possible data structures
+        if (data && Array.isArray(data)) {
+            events = data;
+        } else if (data && data.data && Array.isArray(data.data)) {
+            events = data.data;
+        } else if (data && typeof data === 'object') {
+            Object.values(data).forEach(value => {
+                if (Array.isArray(value)) {
+                    value.forEach(item => {
+                        if (item && typeof item === 'object' && (item.title || item.date)) {
+                            events.push(item);
+                        }
+                    });
+                }
+            });
+        }
+        
+        if (events.length === 0) {
+            throw new Error("No events found in the data");
+        }
+        
+        // Filter for Mar-a-Lago events
+        state.allEvents = events.filter(event => {
+            const locationLower = (event.location || '').toLowerCase();
+            const descriptionLower = (event.description || '').toLowerCase();
+            const titleLower = (event.title || '').toLowerCase();
+            
+            return locationLower.includes('mar-a-lago') || 
+                   locationLower.includes('mar a lago') ||
+                   descriptionLower.includes('mar-a-lago') || 
+                   descriptionLower.includes('mar a lago') ||
+                   titleLower.includes('mar-a-lago') || 
+                   titleLower.includes('mar a lago');
+        });
+
+        // Sort events by date (newest first)
+        state.allEvents.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Set filtered events
+        state.filteredEvents = state.allEvents;
+        
+        // Calculate and display statistics
+        calculateMarALagoStatistics();
+        
+        // Update last updated timestamp
+        if (lastUpdatedElement) {
+            lastUpdatedElement.textContent = `Last updated: ${new Date().toLocaleString()}`;
+        }
+        
+        // Hide loading state and show content
+        if (statusElement) {
+            statusElement.style.display = 'none';
+        }
+        const statsContainer = document.getElementById('stats-container');
+        if (statsContainer) {
+            statsContainer.style.display = 'flex';
+        }
+        
+    } catch (error) {
+        console.error('Error loading events:', error);
+        if (statusElement) {
+            statusElement.textContent = 'Error loading data. Please try again later.';
+            statusElement.className = 'status-message error';
+        }
+    }
+}
+
+// Calculate Mar-a-Lago specific statistics
+function calculateMarALagoStatistics() {
+    // Initialize counters
+    let marALagoTrips = 0;
+    let marALagoDays = 0;
+    let lastMarALagoDate = null;
+    
+    // Cost per round trip to Mar-a-Lago
+    const COST_PER_TRIP = 3400000; // $3.4 million
+    
+    // Sort events by date for trip counting
+    const sortedEvents = [...state.allEvents].sort((a, b) => 
+        new Date(a.date) - new Date(b.date)
+    );
+    
+    // Create a Set to track unique dates
+    const uniqueDates = new Set();
+    
+    // Analyze all events
+    sortedEvents.forEach(event => {
+        const dateKey = event.date.split('T')[0]; // Get just the date part
+        const eventDate = new Date(`${dateKey}T12:00:00`);
+        
+        // Add to unique dates set
+        uniqueDates.add(dateKey);
+        
+        // Count trips when there's a gap of more than 1 day between Mar-a-Lago visits
+        if (lastMarALagoDate) {
+            const daysBetween = Math.floor(
+                (eventDate - new Date(lastMarALagoDate + 'T12:00:00')) / (1000 * 60 * 60 * 24)
+            );
+            if (daysBetween > 1) {
+                marALagoTrips++; // Count as a new trip
+            }
+        } else {
+            marALagoTrips++; // First trip
+        }
+        lastMarALagoDate = dateKey;
+    });
+    
+    // Add one final trip if there were any Mar-a-Lago visits (return trip)
+    if (lastMarALagoDate) {
+        marALagoTrips++;
+    }
+    
+    // Calculate total travel cost
+    const totalTravelCost = marALagoTrips * COST_PER_TRIP;
+    
+    // Update UI with the counts
+    const marALagoCountElement = document.getElementById('maralago-count');
+    const marALagoTripsElement = document.getElementById('maralago-trips');
+    const marALagoDaysElement = document.getElementById('maralago-days');
+    
+    if (marALagoCountElement) {
+        marALagoCountElement.textContent = formatCurrency(totalTravelCost);
+    }
+    if (marALagoTripsElement) {
+        marALagoTripsElement.textContent = marALagoTrips;
+    }
+    if (marALagoDaysElement) {
+        marALagoDaysElement.textContent = uniqueDates.size;
+    }
+}
