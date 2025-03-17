@@ -9,7 +9,8 @@ const state = {
     hasError: false,
     errorMessage: '',
     searchTerm: '',
-    selectedType: 'all'
+    selectedType: 'all',
+    statsMinimized: localStorage.getItem('statsMinimized') === 'true'
 };
 
 // DOM elements
@@ -29,13 +30,13 @@ const pageInfoElement = document.getElementById('page-info');
 // DOM elements for statistics
 const statsContainer = document.getElementById('stats-container');
 const marAlagoCountElement = document.getElementById('maralago-count');
+const golfCountElement = document.getElementById('golf-count');
 const firstLadyCountElement = document.getElementById('firstlady-count');
 const diplomatsCountElement = document.getElementById('diplomats-count');
 const lidHoursElement = document.getElementById('lid-hours');
 const lidAvgElement = document.getElementById('lid-avg');
 const daysInOfficeCountElement = document.getElementById('days-in-office-count');
-
-
+const statsToggleButton = document.getElementById('stats-toggle');
 
 // Auto backup state
 let autoBackupEnabled = localStorage.getItem('autoBackupEnabled') === 'true';
@@ -542,9 +543,33 @@ async function fetchCalendarData() {
     }
 }
 
+// Initialize stats container state
+function initializeStatsContainer() {
+    if (statsContainer && statsToggleButton) {
+        if (state.statsMinimized) {
+            statsContainer.classList.add('minimized');
+            statsToggleButton.querySelector('.toggle-icon').textContent = '▶';
+        }
+
+        statsToggleButton.addEventListener('click', () => {
+            state.statsMinimized = !state.statsMinimized;
+            localStorage.setItem('statsMinimized', state.statsMinimized);
+            
+            if (state.statsMinimized) {
+                statsContainer.classList.add('minimized');
+                statsToggleButton.querySelector('.toggle-icon').textContent = '▶';
+            } else {
+                statsContainer.classList.remove('minimized');
+                statsToggleButton.querySelector('.toggle-icon').textContent = '▼';
+            }
+        });
+    }
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        initializeStatsContainer();
         fetchCalendarData();
         
         // If auto backup is enabled, save data after loading
@@ -639,17 +664,36 @@ function calculateLidTimeStatistics() {
 function calculateEventStatistics() {
     // Initialize counters
     let marALagoDays = 0;
+    let golfDays = 0;
     let firstLadyDays = 0;
     let diplomatDays = 0;
     
     // Create a Set to track unique days for each category
     const marALagoDates = new Set();
+    const golfDates = new Set();
     const firstLadyDates = new Set();
     const diplomatDates = new Set();
+
+    // US Federal Holidays (2024)
+    const holidays = new Set([
+        '2024-01-01', // New Year's Day
+        '2024-01-15', // Martin Luther King Jr. Day
+        '2024-02-19', // Presidents Day
+        '2024-05-27', // Memorial Day
+        '2024-06-19', // Juneteenth
+        '2024-07-04', // Independence Day
+        '2024-09-02', // Labor Day
+        '2024-10-14', // Columbus Day
+        '2024-11-11', // Veterans Day
+        '2024-11-28', // Thanksgiving Day
+        '2024-12-25', // Christmas Day
+    ]);
     
     // Analyze all events
     state.allEvents.forEach(event => {
         const dateKey = event.date.split('T')[0]; // Get just the date part
+        const eventDate = new Date(`${dateKey}T12:00:00`);
+        const isWeekend = eventDate.getDay() === 0 || eventDate.getDay() === 6; // 0 is Sunday, 6 is Saturday
         
         // Check for Mar-a-Lago mentions (case insensitive)
         const locationLower = (event.location || '').toLowerCase();
@@ -665,6 +709,18 @@ function calculateEventStatistics() {
             titleLower.includes('mar a lago')
         ) {
             marALagoDates.add(dateKey);
+        }
+
+        // Check for golf mentions on weekdays
+        if (!isWeekend && !holidays.has(dateKey) && (
+            locationLower.includes('golf') ||
+            descriptionLower.includes('golf') ||
+            titleLower.includes('golf') ||
+            locationLower.includes('national jupiter') || // Trump National Golf Club Jupiter
+            locationLower.includes('bedminster') || // Trump National Golf Club Bedminster
+            locationLower.includes('trump national') // Other Trump National Golf Clubs
+        )) {
+            golfDates.add(dateKey);
         }
         
         // Check for First Lady mentions
@@ -699,6 +755,7 @@ function calculateEventStatistics() {
     
     // Update counters with the number of unique days
     marALagoDays = marALagoDates.size;
+    golfDays = golfDates.size;
     firstLadyDays = firstLadyDates.size;
     diplomatDays = diplomatDates.size;
     
@@ -706,10 +763,21 @@ function calculateEventStatistics() {
     const lidStats = calculateLidTimeStatistics();
     
     // Update UI with the counts
-    marAlagoCountElement.textContent = marALagoDays;
-    //firstLadyCountElement.textContent = firstLadyDays;
-    diplomatsCountElement.textContent = diplomatDays;
-    daysInOfficeCountElement.textContent = daysSince2025();
+    if (marAlagoCountElement) {
+        marAlagoCountElement.textContent = marALagoDays;
+    }
+    if (golfCountElement) {
+        golfCountElement.textContent = golfDays;
+    }
+    if (firstLadyCountElement) {
+        firstLadyCountElement.textContent = firstLadyDays;
+    }
+    if (diplomatsCountElement) {
+        diplomatsCountElement.textContent = diplomatDays;
+    }
+    if (daysInOfficeCountElement) {
+        daysInOfficeCountElement.textContent = daysSince2025();
+    }
     
     // Update lid statistics if elements exist
     if (lidHoursElement) {
@@ -723,6 +791,8 @@ function calculateEventStatistics() {
         lidAvgElement.textContent = `Avg: ${avgHours}h ${avgMinutes}m per day`;
     }
     
-    // Show the stats container
-    statsContainer.style.display = 'flex';
+    // Show the stats container if it exists
+    if (statsContainer) {
+        statsContainer.style.display = 'flex';
+    }
 }

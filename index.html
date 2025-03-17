@@ -10,13 +10,17 @@
     <div class="container">
         <header>
             <h1>U.S. President Schedule</h1>
-            <p>Current U.S. President: <a href="https://en.wikipedia.org/wiki/Donald_Trump" target="_blank" rel="noopener noreferrer">Donald J. Trump</a></p>
+            <p>Current U.S. President: <a href="https://en.wikipedia.org/wiki/Donald_Trump" target="_blank" rel="noopener noreferrer">Donald Trump</a></p>
         </header>
 
         <div id="status" class="status-message loading">
             Loading events...
         </div>
         <div class="stats-container" id="stats-container" style="display: none;">
+            <button id="stats-toggle" class="stats-toggle" title="Toggle statistics visibility">
+                <span class="stats-toggle-text">Show Top Statistics &nbsp;</span>
+                <span class="toggle-icon">▼</span>
+            </button>
             <div class="stat-box">
                 <div class="stat-number" id="days-in-office-count">0</div>
                 <div class="stat-label">Days in office</div>
@@ -24,6 +28,14 @@
             <div class="stat-box">
                 <div class="stat-number" id="maralago-count">0</div>
                 <div class="stat-label">Days at Mar-a-Lago</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="golf-count">0</div>
+                <div class="stat-label">Weekday Golf Days</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="firstlady-count">0</div>
+                <div class="stat-label">Events with First Lady</div>
             </div>
             <div class="stat-box">
                 <div class="stat-number" id="diplomats-count">0</div>

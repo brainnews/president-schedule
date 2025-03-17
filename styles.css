@@ -385,12 +385,59 @@ h1 {
 /* Stats Container Styles */
 .stats-container {
     display: flex;
-    justify-content: space-around;
-    margin: 0 20px 20px;
-    padding: 20px;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin: 20px 20px 40px 20px;
     background-color: var(--card-color);
-    border-radius: 6px;
-    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    position: relative;
+}
+
+.stats-toggle {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.stats-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.stats-container.minimized {
+    height: fit-content;
+    padding: 20px;
+}
+
+.stats-container.minimized .stat-box {
+    display: none;
+}
+
+.stats-container.minimized .stats-toggle .toggle-icon {
+    display: inline-block;
+    transform: rotate(-90deg);
+}
+
+.stats-container.minimized .stats-toggle-text {
+    display: inline-block;
+}
+
+.stats-toggle-text {
+    font-size: 0.9rem;
+    color: var(--muted-text-color);
+    display: none;
+}
+
+.toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
 }
 
 /* Style for the detailed stat information */
@@ -472,9 +519,41 @@ h1 {
     .stats-container {
         flex-direction: column;
         padding: 10px;
+        margin: 20px;
+    }
+    
+    .stats-toggle {
+        position: relative;
+        top: 0;
+        right: 0;
+        width: 100%;
+        padding: 8px;
+        background-color: rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .stats-toggle-text {
+        display: inline-block;
+        font-size: 0.9rem;
+        display: none;
+    }
+
+    .stats-container.minimized {
+        padding: 10px;
+        margin: 20px;
+        text-align: center;
+    }
+
+    .stats-container.minimized .stats-toggle {
+        margin-bottom: 0;
     }
     
     .stat-box {
+        width: 100%;
         border-right: none;
         border-bottom: 1px solid var(--border-color);
         padding: 15px 0;
@@ -487,6 +566,7 @@ h1 {
     .stat-detail {
         margin-top: 5px;
     }
+
     .event-filters {
         flex-direction: column;
         align-items: stretch;
@@ -503,9 +583,11 @@ h1 {
     .search-box {
         flex-grow: 1;
     }
+
     .event-filters input {
         width: 100%;
     }
+
     .pagination {
         flex-wrap: wrap;
     }
