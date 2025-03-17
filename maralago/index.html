@@ -22,6 +22,21 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../images/donald-trump-playing-golf-may-2023.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
         }
         .js-loaded body { 
             visibility: visible; 
@@ -35,6 +50,8 @@
             width: 90%;
             margin: 2rem;
             backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
         }
         .stats-container {
             display: flex;
