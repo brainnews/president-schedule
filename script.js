@@ -22,6 +22,84 @@ function clearBrowserCache() {
 // Clear cache when the page loads
 clearBrowserCache();
 
+// AdSense Configuration
+const ADSENSE_CONFIG = {
+    publisherId: 'ca-pub-XXXXXXXXXXXXXXXXX', // TODO: Replace with your AdSense Publisher ID
+    enabled: false // Set to true after getting AdSense approval
+};
+
+// Load Google AdSense script
+function loadAdSense() {
+    if (!ADSENSE_CONFIG.enabled) {
+        console.log('AdSense is disabled in config');
+        return;
+    }
+
+    try {
+        const script = document.createElement('script');
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+        script.setAttribute('data-ad-client', ADSENSE_CONFIG.publisherId);
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.onerror = () => {
+            console.warn('Failed to load AdSense script');
+        };
+        document.head.appendChild(script);
+        console.log('AdSense script loaded');
+    } catch (error) {
+        console.error('Error loading AdSense:', error);
+    }
+}
+
+// Initialize AdSense ads after page loads
+function initializeAds() {
+    if (!ADSENSE_CONFIG.enabled || typeof window.adsbygoogle === 'undefined') {
+        return;
+    }
+
+    try {
+        const ads = document.querySelectorAll('.adsbygoogle');
+        ads.forEach((ad) => {
+            if (!ad.hasAttribute('data-adsbygoogle-status')) {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            }
+        });
+    } catch (error) {
+        console.error('Error initializing ads:', error);
+    }
+}
+
+// Show banner ad containers when AdSense is enabled
+function showBannerAds() {
+    if (!ADSENSE_CONFIG.enabled) {
+        return;
+    }
+
+    const topAd = document.getElementById('top-banner-ad');
+    const bottomAd = document.getElementById('bottom-banner-ad');
+
+    if (topAd) {
+        topAd.style.display = 'block';
+        // Update the ad client ID in the ad unit
+        const topAdIns = topAd.querySelector('.adsbygoogle');
+        if (topAdIns) {
+            topAdIns.setAttribute('data-ad-client', ADSENSE_CONFIG.publisherId);
+        }
+    }
+
+    if (bottomAd) {
+        bottomAd.style.display = 'block';
+        // Update the ad client ID in the ad unit
+        const bottomAdIns = bottomAd.querySelector('.adsbygoogle');
+        if (bottomAdIns) {
+            bottomAdIns.setAttribute('data-ad-client', ADSENSE_CONFIG.publisherId);
+        }
+    }
+
+    // Initialize the ads
+    setTimeout(() => initializeAds(), 100);
+}
+
 // State management
 const state = {
     allEvents: [],
@@ -292,31 +370,51 @@ function renderEvents() {
     const sortedDates = Object.keys(eventsByDate).sort((a, b) => new Date(b) - new Date(a));
     
     // Render events grouped by date
-    sortedDates.forEach(dateKey => {
+    sortedDates.forEach((dateKey, index) => {
         // Create date section header
         const dateHeader = document.createElement('h2');
         dateHeader.className = 'event-date-section';
         dateHeader.textContent = formatDateForSection(dateKey);
         eventsContainer.appendChild(dateHeader);
-        
+
         // Sort events within each date by time in REVERSE order (latest first)
         const sortedEvents = eventsByDate[dateKey].sort((a, b) => {
             if (!a.timeStart) return 1;
             if (!b.timeStart) return -1;
             return b.timeStart.localeCompare(a.timeStart); // Reverse order
         });
-        
+
         // Create event list for this date
         const dateEventsList = document.createElement('div');
         dateEventsList.className = 'event-list';
-        
+
         // Add each event card
         sortedEvents.forEach(event => {
             dateEventsList.appendChild(createEventCard(event));
         });
-        
+
         eventsContainer.appendChild(dateEventsList);
+
+        // Insert ad after every 3 date sections (if AdSense is enabled)
+        if (ADSENSE_CONFIG.enabled && (index + 1) % 3 === 0 && index < sortedDates.length - 1) {
+            const adContainer = document.createElement('div');
+            adContainer.className = 'ad-container ad-feed';
+            adContainer.innerHTML = `
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-format="fluid"
+                     data-ad-layout-key="-fb+5w+4e-db+86"
+                     data-ad-client="${ADSENSE_CONFIG.publisherId}"
+                     data-ad-slot="XXXXXXXXXX"></ins>
+            `;
+            eventsContainer.appendChild(adContainer);
+        }
     });
+
+    // Initialize ads after rendering
+    if (ADSENSE_CONFIG.enabled) {
+        setTimeout(() => initializeAds(), 100);
+    }
 }
 
 // Update pagination controls
@@ -553,8 +651,10 @@ async function fetchCalendarData() {
         if (!state.hasError) {
             calculateEventStatistics();
             performAutoBackupIfEnabled();
+            // Show banner ads if AdSense is enabled
+            showBannerAds();
         }
-        
+
     } catch (error) {
         console.error('Error fetching calendar data:', error);
         state.hasError = true;
@@ -591,9 +691,12 @@ function initializeStatsContainer() {
 // Initialize the application
 function initializeApp() {
     try {
+        // Load AdSense script
+        loadAdSense();
+
         initializeStatsContainer();
         fetchCalendarData();
-        
+
         // If auto backup is enabled, save data after loading
         if (autoBackupEnabled && state.allEvents.length > 0) {
             setTimeout(() => backupData(true), 2000);
@@ -983,7 +1086,20 @@ async function initializeMarALagoPage() {
         if (statsContainer) {
             statsContainer.style.display = 'flex';
         }
-        
+
+        // Show Mar-a-Lago page ad if AdSense is enabled
+        if (ADSENSE_CONFIG.enabled) {
+            const maralagoAd = document.getElementById('maralago-banner-ad');
+            if (maralagoAd) {
+                maralagoAd.style.display = 'block';
+                const adIns = maralagoAd.querySelector('.adsbygoogle');
+                if (adIns) {
+                    adIns.setAttribute('data-ad-client', ADSENSE_CONFIG.publisherId);
+                }
+                setTimeout(() => initializeAds(), 100);
+            }
+        }
+
     } catch (error) {
         console.error('Error loading events:', error);
         if (statusElement) {

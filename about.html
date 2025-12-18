@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About President Schedule - A non-partisan public resource tracking the U.S. President's daily schedule, travel costs, and time allocation.">
+    <title>About - U.S. President Schedule</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5989760403874039"
+     crossorigin="anonymous"></script>
+    <style>
+        /* Temporary styles to prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+            background-color: #f5f5f5;
+        }
+        .js-loaded body {
+            visibility: visible;
+        }
+    </style>
+    <script>
+        // Check if we're running locally
+        const isLocalDevelopment = window.location.hostname === 'localhost' ||
+                                 window.location.hostname === '127.0.0.1' ||
+                                 window.location.protocol === 'file:';
+
+        // Fetch the latest commit hash from GitHub API (only in production)
+        async function getLatestCommitHash() {
+            if (isLocalDevelopment) {
+                return Date.now(); // Always use timestamp for local development
+            }
+
+            try {
+                const response = await fetch('https://api.github.com/repos/brainnews/president-schedule/commits/main');
+                const data = await response.json();
+                return data.sha;
+            } catch (error) {
+                console.error('Failed to fetch commit hash:', error);
+                return Date.now(); // Fallback to timestamp if GitHub API fails
+            }
+        }
+
+        // Add version to CSS URL to bust cache
+        async function loadResources() {
+            const version = await getLatestCommitHash();
+
+            // Add dynamic CSS
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'stylesheet';
+            linkElement.href = `styles.css?v=${version}`;
+            linkElement.onload = function() {
+                document.documentElement.classList.add('js-loaded');
+            };
+            document.head.appendChild(linkElement);
+
+            // Log environment info for debugging
+            if (isLocalDevelopment) {
+                console.log('Running in development mode - using timestamp for cache busting');
+            }
+        }
+
+        // Load resources when page loads
+        window.addEventListener('load', loadResources);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>About President Schedule</h1>
+            <p><a href="/">← Back to U.S. President Schedule</a></p>
+        </header>
+
+        <div class="privacy-content">
+            <h2>Our Mission</h2>
+            <p>President Schedule is a non-partisan public resource that tracks and displays the daily schedule of the sitting U.S. President. We aggregate information from official sources, press briefings, pool reports, and verified social media accounts to provide transparent, accessible information about how the President spends their time and taxpayer resources.</p>
+
+            <h2>What We Track</h2>
+            <p>Our platform provides comprehensive tracking of:</p>
+            <ul>
+                <li><strong>Daily Schedule:</strong> Events, meetings, briefings, and public appearances from multiple verified sources</li>
+                <li><strong>Travel Costs:</strong> Estimated costs of presidential travel based on official government reports</li>
+                <li><strong>Property Visits:</strong> Visits to Trump-owned properties during weekdays (excluding weekends and holidays)</li>
+                <li><strong>Lid Time:</strong> Hours when the President is unavailable to the press ("lid called")</li>
+                <li><strong>Days in Office:</strong> Official time served since inauguration</li>
+            </ul>
+
+            <h2>Data Sources</h2>
+            <p>We collect schedule information from the following sources:</p>
+            <ul>
+                <li><strong>Press Briefing:</strong> Official White House press briefings</li>
+                <li><strong>Official Schedule:</strong> White House official schedule releases</li>
+                <li><strong>Pool Call Time:</strong> White House press pool notifications</li>
+                <li><strong>@POTUS_Schedule:</strong> Verified social media accounts tracking presidential movements</li>
+                <li><strong>Pool Reports:</strong> Reports from the White House press pool</li>
+                <li><strong>Axios:</strong> Verified news reporting from Axios</li>
+            </ul>
+
+            <h2>Methodology</h2>
+
+            <h3>Mar-a-Lago Travel Costs</h3>
+            <p>Travel cost estimates are based on a <a href="https://www.gao.gov/products/gao-19-178" target="_blank" rel="noopener noreferrer">2017 Government Accountability Office (GAO) report</a> that estimated $3.4 million per round trip to Mar-a-Lago during the first Trump administration. This figure includes:</p>
+            <ul>
+                <li>Air Force One operating costs</li>
+                <li>Security personnel and Coast Guard operations</li>
+                <li>Support aircraft and ground transportation</li>
+            </ul>
+            <p>We count "trips" as visits separated by more than one day at other locations (not consecutive days at Mar-a-Lago).</p>
+
+            <h3>Trump Property Visits</h3>
+            <p>We track weekday (Monday-Friday) visits to Trump-owned properties, excluding federal holidays. The list of properties is compiled from public records and verified sources including <a href="https://www.wsj.com/public/resources/documents/TrumpProperties.pdf" target="_blank" rel="noopener noreferrer">Wall Street Journal reporting</a>.</p>
+
+            <h3>Lid Time Calculation</h3>
+            <p>"Lid" refers to when the White House press office announces the President will have no further public events for the day. We calculate the hours from the lid call time until midnight (end of workday) and provide both total hours and daily averages.</p>
+
+            <h2>Technical Implementation</h2>
+            <p>This is an open-source project built with vanilla JavaScript (no frameworks). The code is available on <a href="https://github.com/brainnews/president-schedule" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+
+            <p>Key features include:</p>
+            <ul>
+                <li>Real-time data fetching from a Cloudflare Worker API</li>
+                <li>Automatic local backup system for offline access</li>
+                <li>Client-side filtering and search</li>
+                <li>Responsive design for mobile and desktop</li>
+                <li>Cache-busting system for always-fresh content</li>
+            </ul>
+
+            <h2>Transparency & Accuracy</h2>
+            <p>We are committed to accuracy and transparency:</p>
+            <ul>
+                <li>All events include source attribution</li>
+                <li>Methodology is publicly documented</li>
+                <li>Cost estimates are based on official government reports</li>
+                <li>Source code is open and auditable</li>
+                <li>We correct errors promptly when identified</li>
+            </ul>
+
+            <h2>Non-Partisan Approach</h2>
+            <p>This site does not endorse or oppose any political party or candidate. We simply present factual information about the President's schedule and associated costs. Our goal is transparency and public accountability, regardless of who holds office.</p>
+
+            <h2>Contact & Feedback</h2>
+            <p>We welcome feedback, corrections, and suggestions:</p>
+            <ul>
+                <li><strong>GitHub Issues:</strong> <a href="https://github.com/brainnews/president-schedule/issues" target="_blank" rel="noopener noreferrer">Report bugs or suggest features</a></li>
+                <li><strong>Email:</strong> Contact us through GitHub for any inquiries</li>
+            </ul>
+
+            <h2>Support This Project</h2>
+            <p>This site is supported by advertising revenue through Google AdSense. Ad revenue helps cover hosting costs and development time. If you find this resource valuable, please consider allowing ads or sharing the site with others who might find it useful.</p>
+
+            <h2>Credits</h2>
+            <p>This project aggregates data from public sources and official government releases. Special thanks to:</p>
+            <ul>
+                <li>White House Press Office for official schedules and briefings</li>
+                <li>White House Press Pool reporters for detailed pool reports</li>
+                <li>Government Accountability Office (GAO) for travel cost data</li>
+                <li>Various news organizations for verification and reporting</li>
+            </ul>
+
+            <h2>Disclaimer</h2>
+            <p>This is an independent project not affiliated with the U.S. Government, the White House, or any political organization. Event information is aggregated from public sources and may not be complete or may contain errors. Travel cost estimates are approximations based on historical data.</p>
+
+            <p>For official information about the President's schedule, please visit <a href="https://www.whitehouse.gov" target="_blank" rel="noopener noreferrer">whitehouse.gov</a>.</p>
+
+            <p><strong>Last Updated:</strong> December 17, 2024</p>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/about.html">About</a>
+            </div>
+            <p>&copy; 2024-2025 President Schedule. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
