@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="In-depth analysis of presidential schedules, travel costs, White House operations, and transparency. Data-driven insights about U.S. President activities.">
+    <meta name="keywords" content="presidential schedule analysis, White House operations, Mar-a-Lago costs, lid time explained, presidential transparency, political analysis">
+    <title>Presidential Schedule Analysis & Insights - President Schedule Blog</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5989760403874039"
+     crossorigin="anonymous"></script>
+    <style>
+        /* Temporary styles to prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+            background-color: #f5f5f5;
+        }
+        .js-loaded body {
+            visibility: visible;
+        }
+    </style>
+    <script>
+        // Check if we're running locally
+        const isLocalDevelopment = window.location.hostname === 'localhost' ||
+                                 window.location.hostname === '127.0.0.1' ||
+                                 window.location.protocol === 'file:';
+
+        // Fetch the latest commit hash from GitHub API (only in production)
+        async function getLatestCommitHash() {
+            if (isLocalDevelopment) {
+                return Date.now(); // Always use timestamp for local development
+            }
+
+            try {
+                const response = await fetch('https://api.github.com/repos/brainnews/president-schedule/commits/main');
+                const data = await response.json();
+                return data.sha;
+            } catch (error) {
+                console.error('Failed to fetch commit hash:', error);
+                return Date.now(); // Fallback to timestamp if GitHub API fails
+            }
+        }
+
+        // Add version to CSS URL to bust cache
+        async function loadResources() {
+            const version = await getLatestCommitHash();
+
+            // Add dynamic CSS
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'stylesheet';
+            linkElement.href = `../styles.css?v=${version}`;
+            linkElement.onload = function() {
+                document.documentElement.classList.add('js-loaded');
+            };
+            document.head.appendChild(linkElement);
+
+            // Log environment info for debugging
+            if (isLocalDevelopment) {
+                console.log('Running in development mode - using timestamp for cache busting');
+            }
+        }
+
+        // Load resources when page loads
+        window.addEventListener('load', loadResources);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Presidential Schedule Analysis</h1>
+            <p><a href="/">← Back to U.S. President Schedule</a></p>
+        </header>
+
+        <div class="privacy-content" style="max-width: 1200px;">
+            <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 30px;">
+                Welcome to our analysis section. Here we provide in-depth, data-driven insights into presidential schedules,
+                travel costs, and White House operations. Our goal is to add context and understanding to the raw schedule data,
+                helping citizens better understand how the President spends time and taxpayer resources.
+            </p>
+        </div>
+
+        <div class="blog-grid">
+            <!-- Article 1 -->
+            <div class="blog-card">
+                <h2><a href="analyzing-presidential-schedules.html">Analyzing Presidential Schedule Patterns: What the Data Reveals</a></h2>
+                <div class="blog-meta">
+                    <span class="blog-meta-date">December 18, 2024</span>
+                    <span class="blog-meta-reading-time">5 min read</span>
+                </div>
+                <p class="blog-excerpt">
+                    Learn how presidential schedule data is collected from official White House sources and press pools,
+                    what common patterns emerge in daily presidential activities, and why transparent schedule tracking
+                    matters for democratic accountability and government transparency.
+                </p>
+                <a href="analyzing-presidential-schedules.html" class="blog-read-more">Read More →</a>
+            </div>
+
+            <!-- Article 2 -->
+            <div class="blog-card">
+                <h2><a href="mar-a-lago-travel-costs-explained.html">Understanding Mar-a-Lago Travel Costs: Breaking Down the $3.4M Figure</a></h2>
+                <div class="blog-meta">
+                    <span class="blog-meta-date">December 18, 2024</span>
+                    <span class="blog-meta-reading-time">6 min read</span>
+                </div>
+                <p class="blog-excerpt">
+                    A detailed breakdown of the $3.4 million Mar-a-Lago travel cost estimate based on the 2017 Government
+                    Accountability Office report. Understand what's included in presidential travel expenses, from Air Force One
+                    operating costs to Secret Service security arrangements.
+                </p>
+                <a href="mar-a-lago-travel-costs-explained.html" class="blog-read-more">Read More →</a>
+            </div>
+
+            <!-- Article 3 -->
+            <div class="blog-card">
+                <h2><a href="understanding-white-house-lid-time.html">What is 'Lid Time'? Understanding White House Press Operations</a></h2>
+                <div class="blog-meta">
+                    <span class="blog-meta-date">December 18, 2024</span>
+                    <span class="blog-meta-reading-time">5 min read</span>
+                </div>
+                <p class="blog-excerpt">
+                    Decode White House press jargon and understand what "lid time" means in presidential operations.
+                    Learn how we calculate lid hours, why it's tracked as a transparency metric, and what it reveals
+                    about presidential activity patterns and press access to the White House.
+                </p>
+                <a href="understanding-white-house-lid-time.html" class="blog-read-more">Read More →</a>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/blog/">Blog</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/about.html">About</a>
+            </div>
+            <p>&copy; 2024-2025 President Schedule. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
