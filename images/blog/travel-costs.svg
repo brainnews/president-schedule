@@ -1,0 +1,50 @@
+<svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Airplane shape -->
+  <g transform="translate(100, 90)">
+    <path d="M -40 0 L -10 0 L 20 -25 L 35 -25 L 20 0 L 35 0 L 45 -10 L 52 -10 L 48 0 L 52 0 L 45 10 L 35 10 L 20 0 L 35 25 L 20 25 L -10 0" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+    <line x1="-25" y1="-8" x2="-25" y2="8" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Dollar sign in abstract shape -->
+  <g transform="translate(220, 90)">
+    <circle cx="0" cy="0" r="35" stroke="white" stroke-width="2.5"/>
+    <path d="M -5 -20 Q -15 -15, -10 -5 Q -5 5, 5 0 Q 15 -5, 10 -15 Q 5 -20, 0 -20" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M 0 -8 Q -10 -3, -5 7 Q 0 17, 10 12 Q 15 7, 12 2" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <line x1="0" y1="-25" x2="0" y2="-20" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="17" x2="0" y2="22" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Abstract building/property -->
+  <g transform="translate(330, 140)">
+    <rect x="0" y="-80" width="50" height="80" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+    <line x1="10" y1="-70" x2="10" y2="-50" stroke="white" stroke-width="2"/>
+    <line x1="25" y1="-70" x2="25" y2="-50" stroke="white" stroke-width="2"/>
+    <line x1="40" y1="-70" x2="40" y2="-50" stroke="white" stroke-width="2"/>
+    <line x1="10" y1="-45" x2="10" y2="-25" stroke="white" stroke-width="2"/>
+    <line x1="25" y1="-45" x2="25" y2="-25" stroke="white" stroke-width="2"/>
+    <line x1="40" y1="-45" x2="40" y2="-25" stroke="white" stroke-width="2"/>
+    <rect x="15" y="-15" width="20" height="15" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Wavy path/route -->
+  <path d="M 420 100 Q 440 80, 460 100 Q 480 120, 500 100 Q 520 80, 540 100" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="5,8"/>
+
+  <!-- Abstract flower/palm tree -->
+  <g transform="translate(550, 100)">
+    <circle cx="0" cy="-20" r="8" stroke="white" stroke-width="2.5"/>
+    <circle cx="-12" cy="-10" r="7" stroke="white" stroke-width="2.5"/>
+    <circle cx="12" cy="-10" r="7" stroke="white" stroke-width="2.5"/>
+    <circle cx="-8" cy="2" r="6" stroke="white" stroke-width="2.5"/>
+    <circle cx="8" cy="2" r="6" stroke="white" stroke-width="2.5"/>
+    <line x1="0" y1="5" x2="0" y2="25" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Grid pattern -->
+  <g transform="translate(50, 90)">
+    <rect x="-15" y="-15" width="30" height="30" stroke="white" stroke-width="2" fill="none"/>
+    <line x1="-15" y1="-5" x2="15" y2="-5" stroke="white" stroke-width="2"/>
+    <line x1="-15" y1="5" x2="15" y2="5" stroke="white" stroke-width="2"/>
+    <line x1="-5" y1="-15" x2="-5" y2="15" stroke="white" stroke-width="2"/>
+    <line x1="5" y1="-15" x2="5" y2="15" stroke="white" stroke-width="2"/>
+  </g>
+</svg>

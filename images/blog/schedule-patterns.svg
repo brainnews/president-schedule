@@ -1,0 +1,37 @@
+<svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Calendar/Document shape -->
+  <rect x="40" y="40" width="80" height="100" rx="8" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+  <line x1="50" y1="60" x2="110" y2="60" stroke="white" stroke-width="2.5"/>
+  <line x1="55" y1="80" x2="75" y2="80" stroke="white" stroke-width="2"/>
+  <line x1="85" y1="80" x2="105" y2="80" stroke="white" stroke-width="2"/>
+  <line x1="55" y1="95" x2="75" y2="95" stroke="white" stroke-width="2"/>
+  <line x1="85" y1="95" x2="105" y2="95" stroke="white" stroke-width="2"/>
+  <line x1="55" y1="110" x2="75" y2="110" stroke="white" stroke-width="2"/>
+  <line x1="85" y1="110" x2="105" y2="110" stroke="white" stroke-width="2"/>
+
+  <!-- Clock shape -->
+  <circle cx="200" cy="90" r="45" stroke="white" stroke-width="2.5"/>
+  <line x1="200" y1="90" x2="200" y2="60" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="200" y1="90" x2="225" y2="90" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="200" cy="90" r="4" fill="white"/>
+
+  <!-- Wavy data lines -->
+  <path d="M 280 60 Q 300 45, 320 60 T 360 60 T 400 60" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 280 90 Q 295 105, 310 90 T 340 90 T 370 90 T 400 90" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M 280 120 Q 305 105, 330 120 T 400 120" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Abstract star burst -->
+  <g transform="translate(470, 90)">
+    <line x1="0" y1="-35" x2="0" y2="-15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="25" y1="-25" x2="12" y2="-12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="35" y1="0" x2="15" y2="0" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="25" y1="25" x2="12" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="35" x2="0" y2="15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="-25" y1="25" x2="-12" y2="12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="-35" y1="0" x2="-15" y2="0" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="-25" y1="-25" x2="-12" y2="-12" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Scribble cloud -->
+  <path d="M 540 70 Q 535 65, 530 70 Q 525 75, 520 70 Q 515 65, 520 60 Q 530 55, 540 60 Q 550 55, 560 60 Q 565 70, 560 75 Q 555 80, 545 78 Q 540 75, 540 70 Z" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+</svg>
