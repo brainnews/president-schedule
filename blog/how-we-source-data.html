@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A transparent look at how President Schedule collects, verifies, and presents presidential schedule data, including our sources, methodology, and limitations.">
+    <meta name="keywords" content="presidential schedule data, White House transparency, data methodology, government accountability, schedule sources">
+    <title>How We Source Presidential Schedule Data - President Schedule Blog</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5989760403874039"
+     crossorigin="anonymous"></script>
+    <style>
+        /* Temporary styles to prevent flash of unstyled content */
+        body {
+            visibility: hidden;
+            background-color: #f5f5f5;
+        }
+        .js-loaded body {
+            visibility: visible;
+        }
+    </style>
+    <script>
+        // Check if we're running locally
+        const isLocalDevelopment = window.location.hostname === 'localhost' ||
+                                 window.location.hostname === '127.0.0.1' ||
+                                 window.location.protocol === 'file:';
+
+        // Fetch the latest commit hash from GitHub API (only in production)
+        async function getLatestCommitHash() {
+            if (isLocalDevelopment) {
+                return Date.now(); // Always use timestamp for local development
+            }
+
+            try {
+                const response = await fetch('https://api.github.com/repos/brainnews/president-schedule/commits/main');
+                const data = await response.json();
+                return data.sha;
+            } catch (error) {
+                console.error('Failed to fetch commit hash:', error);
+                return Date.now(); // Fallback to timestamp if GitHub API fails
+            }
+        }
+
+        // Add version to CSS URL to bust cache
+        async function loadResources() {
+            const version = await getLatestCommitHash();
+
+            // Add dynamic CSS
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'stylesheet';
+            linkElement.href = `../styles.css?v=${version}`;
+            linkElement.onload = function() {
+                document.documentElement.classList.add('js-loaded');
+            };
+            document.head.appendChild(linkElement);
+
+            // Log environment info for debugging
+            if (isLocalDevelopment) {
+                console.log('Running in development mode - using timestamp for cache busting');
+            }
+        }
+
+        // Load resources when page loads
+        window.addEventListener('load', loadResources);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>U.S. President Schedule Blog</h1>
+            <p><a href="/blog/">← Back to Blog</a> | <a href="/">Home</a></p>
+        </header>
+
+        <div class="article-content">
+            <div class="article-header">
+                <h1>How We Source Presidential Schedule Data</h1>
+                <div class="article-meta">
+                    <span>December 18, 2024</span>
+                    <span>6 min read</span>
+                </div>
+            </div>
+
+            <img src="/images/blog/data-sources.svg" alt="Abstract geometric illustration of data collection and verification processes" style="width: 100%; max-width: 600px; height: auto; margin: 30px auto; display: block; opacity: 0.9;">
+
+            <p>
+                Transparency about our own methods is essential to credibility. This article explains exactly how we collect
+                presidential schedule data, what sources we rely on, how we verify information, and the limitations you should
+                understand when using our tracker. Our goal is to be as transparent about our process as we hope the government
+                is about presidential activities.
+            </p>
+
+            <h2>Primary Data Sources</h2>
+
+            <h3>1. Official White House Schedule Releases</h3>
+
+            <p>
+                The White House Press Office releases an official daily schedule, typically each morning. This schedule lists
+                planned public events, meetings, and appearances for that day. These releases are our most authoritative source
+                for scheduled activities.
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> High for scheduled events, but these schedules often underrepresent actual presidential
+                activities. Many meetings, calls, and work sessions don't appear on public schedules. The schedule represents what
+                the administration <em>chooses</em> to disclose, not necessarily everything that happens.
+            </p>
+
+            <p>
+                <strong>Timeliness:</strong> Usually released same-day, though schedules can be updated or amended as plans change.
+            </p>
+
+            <h3>2. White House Press Pool Reports</h3>
+
+            <p>
+                The White House press pool consists of rotating groups of journalists who follow the President and file detailed
+                reports on movements, remarks, and events. These pool reports are distributed to the full White House press corps
+                and provide ground-truth verification of what actually occurs versus what was scheduled.
+            </p>
+
+            <p>
+                The <a href="https://whca.press/" target="_blank" rel="noopener noreferrer">White House Correspondents' Association</a>
+                has historically managed pool rotations, though as noted in our
+                <a href="press-access-2025.html">article on 2025 press access changes</a>, the White House has recently taken
+                control of pool selection.
+            </p>
+
+            <p>
+                Pool reports are archived at the <a href="https://whpool.lib.umd.edu/" target="_blank" rel="noopener noreferrer">University of Maryland's White House Pool Reports collection</a>,
+                providing a historical record dating back to 2020.
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> Very high—these are real-time observations from professional journalists on site.
+            </p>
+
+            <p>
+                <strong>Timeliness:</strong> Near real-time during events; delays possible depending on pool reporter availability.
+            </p>
+
+            <h3>3. Official White House Statements and Briefings</h3>
+
+            <p>
+                Press briefings, statements, and official announcements from the White House provide additional context about
+                presidential activities, schedule changes, and the calling of "lids" (indicating no further public activities
+                are expected).
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> Authoritative for what is disclosed; silent on activities not announced.
+            </p>
+
+            <h3>4. Travel Notices and FAA Data</h3>
+
+            <p>
+                When the President travels, various agencies issue notices that help confirm movements. Temporary Flight Restrictions
+                (TFRs) issued by the FAA often indicate presidential travel to specific locations. These notices, while not naming
+                the President directly, provide verifiable confirmation of travel.
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> High for confirming travel occurred; useful for cross-referencing announced trips.
+            </p>
+
+            <h3>5. News Media Reporting</h3>
+
+            <p>
+                Major news organizations covering the White House—including the Associated Press, Reuters, major newspapers, and
+                television networks—report on presidential activities. We use media reporting to supplement official sources,
+                particularly for events or movements not captured in official releases.
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> Generally high for major outlets, but we prioritize official sources when available.
+            </p>
+
+            <h2>Cost Data Sources</h2>
+
+            <h3>Government Accountability Office (GAO) Reports</h3>
+
+            <p>
+                Our cost figures, particularly the <a href="mar-a-lago-travel-costs-explained.html">$3.4 million per Mar-a-Lago trip</a>
+                estimate, come from official GAO investigations. The GAO is Congress's nonpartisan investigative agency, and their
+                reports represent the most authoritative official accounting of government expenditures.
+            </p>
+
+            <p>
+                For Mar-a-Lago costs, we specifically cite <strong>GAO Report GAO-19-178</strong>, published January 2019, which
+                examined four presidential trips from February 3 to March 5, 2017. This report provides detailed breakdowns of
+                costs incurred by the Department of Defense, Secret Service, Coast Guard, and other agencies.
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> Highest possible—official government audit data.
+            </p>
+
+            <p>
+                <strong>Limitation:</strong> GAO reports examine specific time periods and may not perfectly reflect current costs
+                due to inflation, fuel price changes, and evolving security requirements.
+            </p>
+
+            <h3>FOIA Requests and Disclosed Documents</h3>
+
+            <p>
+                Freedom of Information Act requests filed by journalists and watchdog organizations often reveal additional cost
+                information. Organizations like Judicial Watch and news outlets like The War Zone have obtained Air Force One
+                operating costs through FOIA, which we use to supplement GAO data.
+            </p>
+
+            <p>
+                <strong>Reliability:</strong> High—these are official government documents, though sometimes redacted.
+            </p>
+
+            <h2>Our Verification Process</h2>
+
+            <h3>Cross-Referencing Multiple Sources</h3>
+
+            <p>
+                We don't rely on any single source. When adding events to our tracker, we cross-reference:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Official White House schedule releases</li>
+                <li>Pool reports documenting actual occurrences</li>
+                <li>News coverage confirming events took place</li>
+                <li>Travel data (TFRs, departure/arrival times from pool reports)</li>
+            </ul>
+
+            <p>
+                If sources conflict, we note the discrepancy or use the most authoritative source (typically pool reports for
+                what actually happened vs. schedules for what was planned).
+            </p>
+
+            <h3>Labeling Source Provenance</h3>
+
+            <p>
+                Our data includes source labeling so users can assess reliability. Events confirmed by multiple sources are more
+                reliable than those from single sources. Official announcements are labeled differently from media reports.
+            </p>
+
+            <h3>Corrections Policy</h3>
+
+            <p>
+                When we identify errors, we correct them promptly. Historical data is updated to reflect the most accurate
+                information available. Significant corrections are noted to maintain transparency about our accuracy.
+            </p>
+
+            <h2>What We Track</h2>
+
+            <h3>Schedule Events</h3>
+
+            <p>
+                We capture the following for each event:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>Date and time</strong> (when available)</li>
+                <li><strong>Event type</strong> (meeting, speech, travel, etc.)</li>
+                <li><strong>Location</strong></li>
+                <li><strong>Brief description</strong></li>
+                <li><strong>Source</strong></li>
+            </ul>
+
+            <h3>Calculated Metrics</h3>
+
+            <p>
+                Beyond raw schedule data, we calculate several derived metrics:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>Days in Office:</strong> Simple count from inauguration.</li>
+                <li><strong>Mar-a-Lago Travel Cost:</strong> Trip count × $3.4 million (GAO average). See our
+                    <a href="mar-a-lago-travel-costs-explained.html">full methodology article</a>.</li>
+                <li><strong>Trump Property Visits:</strong> Count of visits to properties listed as Trump-owned per public records.</li>
+                <li><strong>Lid Time Hours:</strong> Time from when a "full lid" is called until midnight. See our
+                    <a href="understanding-white-house-lid-time.html">lid time explanation</a>.</li>
+            </ul>
+
+            <h2>Known Limitations</h2>
+
+            <p>
+                We believe transparency about our limitations is as important as transparency about our methods.
+            </p>
+
+            <h3>Incomplete Picture of Presidential Work</h3>
+
+            <p>
+                Our data captures <strong>publicly disclosed activities</strong>. It does not capture:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Private meetings with staff not announced publicly</li>
+                <li>Phone calls with advisors, legislators, or foreign leaders</li>
+                <li>Classified briefings and national security meetings</li>
+                <li>Policy review, reading, and decision-making done privately</li>
+                <li>Work done after "lid" is called</li>
+            </ul>
+
+            <p>
+                <strong>A President could be working intensively while our data shows limited public activity.</strong> Schedule
+                data measures public visibility and press access, not total work or productivity.
+            </p>
+
+            <h3>Variation in Administrative Transparency</h3>
+
+            <p>
+                Different administrations release different levels of detail. Some provide granular schedules; others release
+                minimal information. This makes cross-administration comparisons challenging—differences in our data may reflect
+                disclosure practices rather than actual activity differences.
+            </p>
+
+            <h3>Cost Estimate Limitations</h3>
+
+            <p>
+                Our cost figures are estimates based on official reports:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>The $3.4 million Mar-a-Lago figure is an <strong>average</strong> from four specific 2017 trips; individual
+                trips may cost more or less.</li>
+                <li>Costs change over time due to inflation, fuel prices, and security requirements.</li>
+                <li>Some costs are classified and not included in official reports.</li>
+                <li>We cannot account for costs borne by state/local governments unless specifically reported.</li>
+            </ul>
+
+            <h3>Real-Time Data Lag</h3>
+
+            <p>
+                While we strive for timely updates, there's inherent lag between events occurring and our database reflecting them.
+                Pool reports must be filed, we must process them, and updates must be published. For the most current information
+                during active news events, official White House channels and major news outlets may be faster.
+            </p>
+
+            <h2>Why This Matters</h2>
+
+            <p>
+                We believe informed citizens make better democratic participants. By being transparent about our methods, we:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>Build trust:</strong> You know exactly where our data comes from.</li>
+                <li><strong>Enable verification:</strong> You can check our sources yourself.</li>
+                <li><strong>Acknowledge limits:</strong> You understand what our data can and cannot tell you.</li>
+                <li><strong>Invite improvement:</strong> If you spot errors or have better sources, you can help us improve.</li>
+            </ul>
+
+            <h2>How to Use Our Data Responsibly</h2>
+
+            <p>
+                We encourage users to:
+            </p>
+
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>Understand context:</strong> Schedule data is one piece of a larger picture.</li>
+                <li><strong>Check sources:</strong> For important claims, verify with original sources we cite.</li>
+                <li><strong>Avoid overinterpretation:</strong> Fewer public events doesn't necessarily mean less work.</li>
+                <li><strong>Consider methodology:</strong> When comparing across time periods or administrations, remember
+                    that disclosure practices vary.</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+
+            <p>
+                Our commitment is to present presidential schedule data accurately, transparently, and with full acknowledgment
+                of our sources and limitations. We're not trying to make political points—we're trying to make government data
+                more accessible and useful for average citizens.
+            </p>
+
+            <p>
+                If you have questions about our methodology, suggestions for improvement, or corrections to offer, we welcome
+                your input. Transparency is a two-way street, and we're committed to practicing what we advocate.
+            </p>
+
+            <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #334155;">
+                <strong>Related Articles:</strong><br>
+                <a href="analyzing-presidential-schedules.html">Analyzing Presidential Schedule Patterns</a> •
+                <a href="mar-a-lago-travel-costs-explained.html">Understanding Mar-a-Lago Travel Costs</a> •
+                <a href="understanding-white-house-lid-time.html">What is 'Lid Time'?</a>
+            </p>
+        </div>
+
+        <footer class="site-footer">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/blog/">Blog</a>
+                <a href="/privacy.html">Privacy Policy</a>
+                <a href="/about.html">About</a>
+            </div>
+            <p>&copy; 2024-2025 President Schedule. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
