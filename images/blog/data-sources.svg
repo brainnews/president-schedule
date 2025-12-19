@@ -1,0 +1,88 @@
+<svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Multiple document sources -->
+  <g transform="translate(80, 80)">
+    <rect x="-25" y="-30" width="50" height="60" rx="3" stroke="white" stroke-width="2.5"/>
+    <line x1="-18" y1="-20" x2="18" y2="-20" stroke="white" stroke-width="2"/>
+    <line x1="-18" y1="-10" x2="18" y2="-10" stroke="white" stroke-width="2"/>
+    <line x1="-18" y1="0" x2="18" y2="0" stroke="white" stroke-width="2"/>
+    <line x1="-18" y1="10" x2="10" y2="10" stroke="white" stroke-width="2"/>
+  </g>
+
+  <g transform="translate(80, 120)">
+    <rect x="-25" y="-30" width="50" height="60" rx="3" stroke="white" stroke-width="2"/>
+    <line x1="-18" y1="-20" x2="18" y2="-20" stroke="white" stroke-width="1.5"/>
+    <line x1="-18" y1="-10" x2="18" y2="-10" stroke="white" stroke-width="1.5"/>
+    <line x1="-18" y1="0" x2="18" y2="0" stroke="white" stroke-width="1.5"/>
+  </g>
+
+  <!-- Arrows flowing to center -->
+  <g transform="translate(140, 100)">
+    <line x1="0" y1="0" x2="60" y2="0" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 55 -5 L 60 0 L 55 5" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Central processing/verification icon -->
+  <g transform="translate(250, 100)">
+    <rect x="-40" y="-40" width="80" height="80" rx="8" stroke="white" stroke-width="2.5"/>
+    <!-- Checkmark -->
+    <path d="M -15 0 L -5 15 L 20 -15" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Gear teeth around edge -->
+    <circle cx="0" cy="0" r="50" stroke="white" stroke-width="2" stroke-dasharray="8,8"/>
+  </g>
+
+  <!-- Data flowing out -->
+  <g transform="translate(330, 100)">
+    <line x1="0" y1="0" x2="60" y2="0" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 55 -5 L 60 0 L 55 5" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Database/output -->
+  <g transform="translate(450, 100)">
+    <ellipse cx="0" cy="-30" rx="35" ry="12" stroke="white" stroke-width="2.5"/>
+    <line x1="-35" y1="-30" x2="-35" y2="0" stroke="white" stroke-width="2.5"/>
+    <line x1="35" y1="-30" x2="35" y2="0" stroke="white" stroke-width="2.5"/>
+    <ellipse cx="0" cy="0" rx="35" ry="12" stroke="white" stroke-width="2.5"/>
+    <ellipse cx="0" cy="-15" rx="35" ry="12" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- Monitor/display -->
+  <g transform="translate(530, 90)">
+    <rect x="-25" y="-25" width="50" height="40" rx="2" stroke="white" stroke-width="2.5"/>
+    <line x1="-15" y1="15" x2="15" y2="15" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <rect x="-8" y="15" width="16" height="8" stroke="white" stroke-width="2.5"/>
+    <!-- Screen content -->
+    <line x1="-18" y1="-15" x2="18" y2="-15" stroke="white" stroke-width="1.5"/>
+    <line x1="-18" y1="-8" x2="18" y2="-8" stroke="white" stroke-width="1.5"/>
+    <line x1="-18" y1="-1" x2="10" y2="-1" stroke="white" stroke-width="1.5"/>
+  </g>
+
+  <!-- Source icons at top -->
+  <g transform="translate(60, 40)">
+    <circle cx="0" cy="0" r="15" stroke="white" stroke-width="2.5"/>
+    <path d="M -6 -3 L 0 3 L 6 -3" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="0" y1="3" x2="0" y2="-6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(110, 40)">
+    <circle cx="0" cy="0" r="15" stroke="white" stroke-width="2.5"/>
+    <rect x="-6" y="-6" width="12" height="12" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- Magnifying glass (verification) -->
+  <g transform="translate(180, 140)">
+    <circle cx="0" cy="0" r="18" stroke="white" stroke-width="2.5"/>
+    <line x1="13" y1="13" x2="25" y2="25" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M -6 -2 L 0 4 L 6 -4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Shield (reliability) -->
+  <g transform="translate(320, 50)">
+    <path d="M 0 -20 L -15 -12 L -15 0 Q -15 12, 0 20 Q 15 12, 15 0 L 15 -12 Z" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+    <path d="M -8 -2 L -2 5 L 10 -8" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Data flow particles -->
+  <circle cx="160" cy="100" r="3" fill="white"/>
+  <circle cx="310" cy="100" r="3" fill="white"/>
+  <circle cx="410" cy="100" r="3" fill="white"/>
+</svg>

@@ -1,0 +1,78 @@
+<svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Camp David cabin -->
+  <g transform="translate(120, 100)">
+    <!-- Cabin body -->
+    <rect x="-40" y="-35" width="80" height="60" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Roof -->
+    <path d="M -48 -35 L 0 -60 L 48 -35" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+    <!-- Door -->
+    <rect x="-8" y="-5" width="16" height="25" stroke="white" stroke-width="2"/>
+    <!-- Windows -->
+    <rect x="-30" y="-20" width="12" height="12" stroke="white" stroke-width="2"/>
+    <rect x="18" y="-20" width="12" height="12" stroke="white" stroke-width="2"/>
+    <!-- Chimney -->
+    <rect x="20" y="-55" width="10" height="20" stroke="white" stroke-width="2.5"/>
+    <!-- Smoke -->
+    <path d="M 25 -58 Q 22 -65, 25 -72 Q 28 -75, 30 -70" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Trees (Camp David forest) -->
+  <g transform="translate(70, 90)">
+    <path d="M 0 0 L -8 -15 L -5 -15 L -10 -28 L -6 -28 L -12 -40 L 12 -40 L 6 -28 L 10 -28 L 5 -15 L 8 -15 Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/>
+    <rect x="-3" y="0" width="6" height="12" stroke="white" stroke-width="2"/>
+  </g>
+
+  <g transform="translate(180, 95)">
+    <path d="M 0 0 L -6 -12 L -4 -12 L -8 -22 L -5 -22 L -10 -32 L 10 -32 L 5 -22 L 8 -22 L 4 -12 L 6 -12 Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/>
+    <rect x="-2" y="0" width="4" height="10" stroke="white" stroke-width="2"/>
+  </g>
+
+  <!-- VS divider -->
+  <g transform="translate(300, 100)">
+    <circle cx="0" cy="0" r="30" stroke="white" stroke-width="2.5"/>
+    <text x="-12" y="8" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">VS</text>
+  </g>
+
+  <!-- Mar-a-Lago estate -->
+  <g transform="translate(480, 100)">
+    <!-- Main building -->
+    <rect x="-50" y="-40" width="100" height="65" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+    <!-- Tower -->
+    <rect x="-10" y="-65" width="20" height="25" stroke="white" stroke-width="2.5"/>
+    <!-- Tower top -->
+    <circle cx="0" cy="-65" r="8" stroke="white" stroke-width="2.5"/>
+    <!-- Arched entrance -->
+    <path d="M -15 25 L -15 5 Q -15 -5, 0 -5 Q 15 -5, 15 5 L 15 25" stroke="white" stroke-width="2" fill="none"/>
+    <!-- Windows - multiple rows -->
+    <rect x="-40" y="-25" width="8" height="10" stroke="white" stroke-width="1.5"/>
+    <rect x="-25" y="-25" width="8" height="10" stroke="white" stroke-width="1.5"/>
+    <rect x="17" y="-25" width="8" height="10" stroke="white" stroke-width="1.5"/>
+    <rect x="32" y="-25" width="8" height="10" stroke="white" stroke-width="1.5"/>
+    <rect x="-40" y="-10" width="8" height="10" stroke="white" stroke-width="1.5"/>
+    <rect x="32" y="-10" width="8" height="10" stroke="white" stroke-width="1.5"/>
+  </g>
+
+  <!-- Palm trees (Mar-a-Lago) -->
+  <g transform="translate(420, 110)">
+    <line x1="0" y1="0" x2="0" y2="-35" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M 0 -35 Q -15 -45, -20 -40" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M 0 -35 Q 15 -45, 20 -40" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M 0 -35 Q -10 -50, -5 -48" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M 0 -35 Q 10 -50, 5 -48" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Ocean waves (Mar-a-Lago waterfront) -->
+  <path d="M 400 140 Q 410 135, 420 140 Q 430 145, 440 140 Q 450 135, 460 140" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 405 150 Q 415 145, 425 150 Q 435 155, 445 150" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Mountains (Camp David background) -->
+  <path d="M 30 80 L 50 40 L 70 60 L 90 35 L 110 70" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+
+  <!-- Dollar signs -->
+  <g transform="translate(250, 50)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white">$</text>
+  </g>
+  <g transform="translate(350, 50)">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white">$$</text>
+  </g>
+</svg>
