@@ -92,3 +92,12 @@
 
 /.well-known/*
   Cache-Control: public, max-age=3600
+
+# ============================================================================
+# ads.txt - AdSense verification file
+# Short cache to allow AdSense to detect changes quickly
+# ============================================================================
+
+/ads.txt
+  Cache-Control: public, max-age=3600
+  Content-Type: text/plain; charset=utf-8
