@@ -112,13 +112,14 @@ const state = {
     errorMessage: '',
     searchTerm: '',
     selectedType: 'all',
-    statsMinimized: localStorage.getItem('statsMinimized') === 'true'
+    statsMinimized: localStorage.getItem('statsMinimized') === 'true',
+    calendarYear: new Date().getFullYear(),
+    calendarMonth: new Date().getMonth()
 };
 
 // DOM elements
 const eventsContainer = document.getElementById('events');
 const statusElement = document.getElementById('status');
-const filtersContainer = document.getElementById('filters');
 const lastUpdatedElement = document.getElementById('last-updated');
 const searchElement = document.getElementById('search');
 const searchButton = document.getElementById('search-btn');
@@ -129,6 +130,7 @@ const paginationElement = document.getElementById('pagination');
 const prevButton = document.getElementById('prev-btn');
 const nextButton = document.getElementById('next-btn');
 const pageInfoElement = document.getElementById('page-info');
+const calendarNavElement = document.getElementById('calendar-nav');
 // DOM elements for statistics
 const statsContainer = document.getElementById('stats-container');
 const marAlagoCountElement = document.getElementById('maralago-count');
@@ -239,8 +241,7 @@ function filterEvents() {
     });
 
     state.currentPage = 1;
-    renderEvents();
-    updatePagination();
+    renderCalendar();
 }
 
 // Clear search and reset filters
@@ -334,152 +335,342 @@ function loadBackupData() {
     }
 }
 
-// Render events to DOM
-function renderEvents() {
-    eventsContainer.innerHTML = '';
-    
-    if (state.filteredEvents.length === 0) {
-        const noEvents = document.createElement('div');
-        noEvents.textContent = 'No events found matching your criteria.';
-        noEvents.style.textAlign = 'center';
-        noEvents.style.gridColumn = '1 / -1';
-        noEvents.style.padding = '40px 20px';
-        noEvents.style.color = 'var(--muted-text-color)';
-        eventsContainer.appendChild(noEvents);
+// Render calendar month grid
+// Render a scrollable list of search results in place of the calendar grid
+function renderSearchResults() {
+    eventsContainer.classList.add('search-mode');
+    const results = state.filteredEvents;
+    const term = state.searchTerm;
+
+    let html = '<div class="search-results">';
+
+    if (results.length === 0) {
+        html += `<div class="search-results-empty">No results for "<strong>${term}</strong>"</div>`;
+        html += '</div>';
+        eventsContainer.innerHTML = html;
         return;
     }
 
-    const startIndex = (state.currentPage - 1) * state.eventsPerPage;
-    const endIndex = startIndex + state.eventsPerPage;
-    const currentPageEvents = state.filteredEvents.slice(startIndex, endIndex);
-    
-    // Group events by date for better organization
-    const eventsByDate = {};
-    
-    currentPageEvents.forEach(event => {
-        if (!event.date) return;
-        
-        const dateKey = event.date.split('T')[0]; // Get just the date part
-        if (!eventsByDate[dateKey]) {
-            eventsByDate[dateKey] = [];
-        }
-        eventsByDate[dateKey].push(event);
-    });
-    
-    // Sort dates in reverse chronological order (newest first)
-    const sortedDates = Object.keys(eventsByDate).sort((a, b) => new Date(b) - new Date(a));
-    
-    // Render events grouped by date
-    sortedDates.forEach((dateKey, index) => {
-        // Create date section header
-        const dateHeader = document.createElement('h2');
-        dateHeader.className = 'event-date-section';
-        dateHeader.textContent = formatDateForSection(dateKey);
-        eventsContainer.appendChild(dateHeader);
+    html += `<div class="search-results-header">${results.length} result${results.length !== 1 ? 's' : ''} for "<strong>${term}</strong>"</div>`;
 
-        // Sort events within each date by time in REVERSE order (latest first)
-        const sortedEvents = eventsByDate[dateKey].sort((a, b) => {
-            if (!a.timeStart) return 1;
-            if (!b.timeStart) return -1;
-            return b.timeStart.localeCompare(a.timeStart); // Reverse order
-        });
+    results.forEach((event, idx) => {
+        const color = getSourceColor(event.type);
+        const sourceName = formatSourceName(event.type);
+        const dateDisplay = event.date ? formatDateForSection(event.date) : '';
+        const timeStr = event.timeStart ? formatTime(event.timeStart) : '';
+        const title = getEventDisplayTitle(event);
 
-        // Create event list for this date
-        const dateEventsList = document.createElement('div');
-        dateEventsList.className = 'event-list';
-
-        // Add each event card
-        sortedEvents.forEach(event => {
-            dateEventsList.appendChild(createEventCard(event));
-        });
-
-        eventsContainer.appendChild(dateEventsList);
-
-        // Insert ad after every 3 date sections (if AdSense is enabled)
-        if (ADSENSE_CONFIG.enabled && (index + 1) % 3 === 0 && index < sortedDates.length - 1) {
-            const adContainer = document.createElement('div');
-            adContainer.className = 'ad-container ad-feed';
-            adContainer.innerHTML = `
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-format="fluid"
-                     data-ad-layout-key="-fb+5w+4e-db+86"
-                     data-ad-client="${ADSENSE_CONFIG.publisherId}"
-                     data-ad-slot="XXXXXXXXXX"></ins>
-            `;
-            eventsContainer.appendChild(adContainer);
-        }
+        html += `<button class="search-result-item" data-idx="${idx}">` +
+            `<div class="search-result-color" style="background-color:${color};"></div>` +
+            `<div class="search-result-body">` +
+            `<div class="search-result-date">${dateDisplay}</div>` +
+            `<div class="search-result-title">${title}</div>` +
+            (timeStr ? `<div class="search-result-time">${timeStr}</div>` : '') +
+            (event.location ? `<div class="search-result-loc">${event.location}</div>` : '') +
+            `</div>` +
+            `<span class="search-result-badge" style="background-color:${color};">${sourceName}</span>` +
+            `</button>`;
     });
 
-    // Initialize ads after rendering
-    if (ADSENSE_CONFIG.enabled) {
-        setTimeout(() => initializeAds(), 100);
-    }
+    html += '</div>';
+    eventsContainer.innerHTML = html;
+
+    eventsContainer.querySelectorAll('.search-result-item').forEach(btn => {
+        const idx = parseInt(btn.dataset.idx, 10);
+        btn.addEventListener('click', () => showEventModal(results[idx]));
+    });
 }
 
-// Update pagination controls
-function updatePagination() {
-    const totalPages = Math.ceil(state.filteredEvents.length / state.eventsPerPage);
-    
-    pageInfoElement.textContent = `Page ${state.currentPage} of ${totalPages || 1}`;
-    prevButton.disabled = state.currentPage <= 1;
-    nextButton.disabled = state.currentPage >= totalPages;
-    
-    paginationElement.style.display = totalPages > 1 ? 'flex' : 'none';
+function renderCalendar() {
+    // When a search is active, show a scrollable results list instead of the grid
+    if (state.searchTerm) {
+        renderSearchResults();
+        return;
+    }
+
+    eventsContainer.classList.remove('search-mode');
+    eventsContainer.innerHTML = '';
+
+    const year = state.calendarYear;
+    const month = state.calendarMonth;
+
+    // Update month label
+    const monthLabel = document.getElementById('cal-month-label');
+    if (monthLabel) {
+        monthLabel.textContent = new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    }
+
+    // Build eventsByDate map for this month only
+    const eventsByDate = {};
+    state.filteredEvents.forEach(event => {
+        if (!event.date) return;
+        const dateKey = event.date.split('T')[0];
+        const parts = dateKey.split('-');
+        if (parseInt(parts[0], 10) !== year || parseInt(parts[1], 10) - 1 !== month) return;
+        if (!eventsByDate[dateKey]) eventsByDate[dateKey] = [];
+        eventsByDate[dateKey].push(event);
+    });
+
+    const todayStr = getTodayString();
+    const firstDayOfWeek = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const totalCells = firstDayOfWeek + daysInMonth;
+    const totalWeeks = Math.ceil(totalCells / 7);
+
+    let html = '<div class="cal-grid">';
+
+    // Header row
+    html += '<div class="cal-header-row">';
+    dayNames.forEach(d => { html += `<div class="cal-header-cell">${d}</div>`; });
+    html += '</div>';
+
+    // Body — one .cal-week div per row so CSS can distribute height equally
+    html += '<div class="cal-body">';
+
+    for (let week = 0; week < totalWeeks; week++) {
+        html += '<div class="cal-week">';
+        for (let dow = 0; dow < 7; dow++) {
+            const cellNum = week * 7 + dow;
+            const day = cellNum - firstDayOfWeek + 1;
+
+            if (day < 1 || day > daysInMonth) {
+                html += '<div class="cal-day cal-day--empty"></div>';
+                continue;
+            }
+
+            const mm = String(month + 1).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const dateKey = `${year}-${mm}-${dd}`;
+            const isToday = dateKey === todayStr;
+            const dayEvents = eventsByDate[dateKey] || [];
+
+            html += `<div class="cal-day${isToday ? ' cal-day--today' : ''}">`;
+            html += `<span class="cal-day-number${isToday ? ' cal-day-number--today' : ''}">${day}</span>`;
+            html += '<div class="cal-events-list">';
+
+            const maxPills = 3;
+            const visibleEvents = dayEvents.slice(0, maxPills);
+            const overflow = dayEvents.length - maxPills;
+
+            visibleEvents.forEach((event, idx) => {
+                const color = getSourceColor(event.type);
+                const timePrefix = event.timeStart ? formatTime(event.timeStart) + ' ' : '';
+                const label = timePrefix + getEventDisplayTitle(event);
+                const safeLabel = label.replace(/"/g, '&quot;');
+                html += `<button class="cal-event-pill" data-date="${dateKey}" data-idx="${idx}" title="${safeLabel}">` +
+                    `<span class="cal-event-dot" style="background-color:${color};"></span>` +
+                    `<span class="cal-pill-text">${label}</span>` +
+                    `</button>`;
+            });
+
+            if (overflow > 0) {
+                html += `<button class="cal-more-btn" data-date="${dateKey}">+${overflow} more</button>`;
+            }
+
+            html += '</div></div>';
+        }
+        html += '</div>'; // close .cal-week
+    }
+
+    html += '</div></div>'; // close .cal-body and .cal-grid
+    eventsContainer.innerHTML = html;
+
+    // Measure where #events starts and set an explicit pixel height so
+    // the CSS height:100% chain (.cal-grid → .cal-body → .cal-week flex:1)
+    // has a definite parent height to distribute from.
+    sizeCalendarToViewport();
+
+    // Attach pill click listeners
+    eventsContainer.querySelectorAll('.cal-event-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const dateKey = btn.dataset.date;
+            const idx = parseInt(btn.dataset.idx, 10);
+            showEventModal((eventsByDate[dateKey] || [])[idx]);
+        });
+    });
+
+    // Attach overflow click listeners
+    eventsContainer.querySelectorAll('.cal-more-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            showDayOverflowModal(btn.dataset.date, eventsByDate[btn.dataset.date] || []);
+        });
+    });
+}
+
+// Height is handled by CSS flex within .cal-main; clear any stale inline value
+function sizeCalendarToViewport() {
+    eventsContainer.style.height = '';
+}
+
+// Initialize calendar navigation buttons and modal close
+function initializeCalendarNav() {
+    document.getElementById('cal-prev-btn').addEventListener('click', () => {
+        state.calendarMonth--;
+        if (state.calendarMonth < 0) { state.calendarMonth = 11; state.calendarYear--; }
+        renderCalendar();
+    });
+    document.getElementById('cal-next-btn').addEventListener('click', () => {
+        state.calendarMonth++;
+        if (state.calendarMonth > 11) { state.calendarMonth = 0; state.calendarYear++; }
+        renderCalendar();
+    });
+    document.getElementById('cal-today-btn').addEventListener('click', () => {
+        state.calendarYear = new Date().getFullYear();
+        state.calendarMonth = new Date().getMonth();
+        renderCalendar();
+    });
+    document.getElementById('modal-close').addEventListener('click', closeEventModal);
+    document.querySelector('.event-modal-backdrop').addEventListener('click', closeEventModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEventModal(); });
+    window.addEventListener('resize', sizeCalendarToViewport);
+}
+
+// Return a meaningful display label for a calendar event pill or modal
+// The API data has no title/summary/name fields, so we derive it from
+// description → location → source type (mirroring how createEventCard works)
+function getEventDisplayTitle(event) {
+    return event.description || event.location || formatSourceName(event.type) || 'Event';
+}
+
+// Return hex color for a given event source type
+function getSourceColor(type) {
+    if (!type) return '#64748b';
+    const t = type.toLowerCase();
+    if (t.includes('press briefing')) return '#ef4444';
+    if (t.includes('official schedule')) return '#3b82f6';
+    if (t.includes('pool call time')) return '#8b5cf6';
+    if (t.includes('potus_schedule')) return '#10b981';
+    if (t.includes('pool report')) return '#f59e0b';
+    if (t.includes('axios')) return '#ec4899';
+    return '#64748b';
+}
+
+// Return today's date as YYYY-MM-DD (timezone-safe)
+function getTodayString() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Show event detail modal
+function showEventModal(event) {
+    if (!event) return;
+    const modal = document.getElementById('event-modal');
+    const body = document.getElementById('modal-body');
+    const color = getSourceColor(event.type);
+    const sourceName = formatSourceName(event.type);
+    const startTimeStr = event.timeStart ? formatTime(event.timeStart) : '';
+    const endTimeStr = event.timeEnd ? formatTime(event.timeEnd) : '';
+    const timeDisplay = endTimeStr ? `${startTimeStr} \u2013 ${endTimeStr}` : startTimeStr;
+    const dateDisplay = event.date ? formatDateForSection(event.date) : '';
+
+    const modalTitle = getEventDisplayTitle(event);
+    // Only show description separately if it differs from the derived title
+    const showDescription = event.description && event.description !== modalTitle;
+
+    body.innerHTML = `
+        <div class="modal-source-badge" style="background-color:${color};">${sourceName}</div>
+        <div class="modal-title">${modalTitle}</div>
+        <div class="modal-meta">
+            ${timeDisplay ? `<span class="modal-time">${timeDisplay}</span>` : ''}
+            ${event.location ? `<span class="modal-location">${event.location}</span>` : ''}
+        </div>
+        ${dateDisplay ? `<div class="modal-date">${dateDisplay}</div>` : ''}
+        ${showDescription ? `<div class="modal-description">${event.description}</div>` : ''}
+        ${event.url ? `<a href="${event.url}" target="_blank" rel="noopener noreferrer" class="modal-link">More information \u2192</a>` : ''}
+    `;
+
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+}
+
+// Show all events for a day as a clickable list in the modal
+function showDayOverflowModal(dateKey, events) {
+    const modal = document.getElementById('event-modal');
+    const body = document.getElementById('modal-body');
+    const dateDisplay = formatDateForSection(dateKey);
+
+    const itemsHtml = events.map((event, idx) => {
+        const color = getSourceColor(event.type);
+        const timeStr = event.timeStart ? formatTime(event.timeStart) : '';
+        return `
+            <div class="modal-day-event-item" data-idx="${idx}">
+                <div class="modal-day-event-color" style="background-color:${color};"></div>
+                <div>
+                    <div class="modal-day-event-title">${getEventDisplayTitle(event)}</div>
+                    ${timeStr ? `<div class="modal-day-event-time">${timeStr}</div>` : ''}
+                    ${event.location ? `<div class="modal-day-event-loc">${event.location}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    body.innerHTML = `
+        <div class="modal-title">${dateDisplay}</div>
+        <div class="modal-day-event-list">${itemsHtml}</div>
+    `;
+
+    body.querySelectorAll('.modal-day-event-item').forEach((item, idx) => {
+        item.addEventListener('click', () => showEventModal(events[idx]));
+    });
+
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+}
+
+// Close the event detail modal
+function closeEventModal() {
+    document.getElementById('event-modal').style.display = 'none';
+    document.body.classList.remove('modal-open');
 }
 
 // Initialize search functionality
 function initializeFilters() {
-    // Set up event listeners
+    let searchDebounceTimer = null;
+
+    // Real-time search: update results as the user types (debounced 200ms)
+    searchElement.addEventListener('input', () => {
+        clearSearchButton.style.display = searchElement.value.trim() !== '' ? 'block' : 'none';
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            state.searchTerm = searchElement.value.trim();
+            filterEvents();
+        }, 200);
+    });
+
+    // Also run immediately on Enter / button click (cancels pending debounce)
     searchButton.addEventListener('click', () => {
+        clearTimeout(searchDebounceTimer);
         state.searchTerm = searchElement.value.trim();
         filterEvents();
     });
 
     searchElement.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
+            clearTimeout(searchDebounceTimer);
             state.searchTerm = searchElement.value.trim();
             filterEvents();
         }
     });
-    
+
     // Clear search button functionality
     clearSearchButton.addEventListener('click', clearSearch);
-    
-    // Toggle clear button visibility based on search input
-    searchElement.addEventListener('input', () => {
-        if (searchElement.value.trim() !== '') {
-            clearSearchButton.style.display = 'block';
-        } else {
-            clearSearchButton.style.display = 'none';
-        }
-    });
-    
+
     // Initially hide the clear button if search is empty
     clearSearchButton.style.display = searchElement.value.trim() !== '' ? 'block' : 'none';
 
     // Set up backup button functionality
     backupButton.addEventListener('click', toggleAutoBackup);
-    
+
     // Initialize backup button state
     updateBackupButtonState();
 
-    prevButton.addEventListener('click', () => {
-        if (state.currentPage > 1) {
-            state.currentPage--;
-            renderEvents();
-            updatePagination();
-        }
-    });
-
-    nextButton.addEventListener('click', () => {
-        const totalPages = Math.ceil(state.filteredEvents.length / state.eventsPerPage);
-        if (state.currentPage < totalPages) {
-            state.currentPage++;
-            renderEvents();
-            updatePagination();
-        }
-    });
+    // Initialize calendar navigation and modal
+    initializeCalendarNav();
 }
 
 // Update UI based on loading/error state
@@ -488,18 +679,15 @@ function updateStatus() {
         statusElement.className = 'status-message loading';
         statusElement.textContent = 'Loading events...';
         statusElement.style.display = 'block';
-        filtersContainer.style.display = 'none';
-        paginationElement.style.display = 'none';
+        if (calendarNavElement) calendarNavElement.style.display = 'none';
     } else if (state.hasError) {
         statusElement.className = 'status-message error';
         statusElement.textContent = state.errorMessage || 'An error occurred while loading events.';
         statusElement.style.display = 'block';
-        filtersContainer.style.display = 'none';
-        paginationElement.style.display = 'none';
+        if (calendarNavElement) calendarNavElement.style.display = 'none';
     } else {
         statusElement.style.display = 'none';
-        filtersContainer.style.display = 'flex';
-        updatePagination();
+        if (calendarNavElement) calendarNavElement.style.display = 'flex';
     }
 }
 
@@ -647,7 +835,7 @@ async function fetchCalendarData() {
         
         // Initialize UI
         initializeFilters();
-        renderEvents();
+        renderCalendar();
         if (!state.hasError) {
             calculateEventStatistics();
             performAutoBackupIfEnabled();
@@ -979,10 +1167,6 @@ function calculateEventStatistics() {
         lidAvgElement.textContent = `Avg: ${avgHours}h ${avgMinutes}m per day`;
     }
     
-    // Show the stats container if it exists
-    if (statsContainer) {
-        statsContainer.style.display = 'flex';
-    }
 }
 
 // Initialize the Mar-a-Lago specific page
@@ -1082,11 +1266,6 @@ async function initializeMarALagoPage() {
         if (statusElement) {
             statusElement.style.display = 'none';
         }
-        const statsContainer = document.getElementById('stats-container');
-        if (statsContainer) {
-            statsContainer.style.display = 'flex';
-        }
-
         // Show Mar-a-Lago page ad if AdSense is enabled
         if (ADSENSE_CONFIG.enabled) {
             const maralagoAd = document.getElementById('maralago-banner-ad');

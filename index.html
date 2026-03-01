@@ -10,17 +10,17 @@
      crossorigin="anonymous"></script>
     <style>
         /* Temporary styles to prevent flash of unstyled content */
-        body { 
-            visibility: hidden; 
+        body {
+            visibility: hidden;
             background-color: #f5f5f5;
         }
-        .js-loaded body { 
-            visibility: visible; 
+        .js-loaded body {
+            visibility: visible;
         }
     </style>
     <script>
         // Check if we're running locally
-        const isLocalDevelopment = window.location.hostname === 'localhost' || 
+        const isLocalDevelopment = window.location.hostname === 'localhost' ||
                                  window.location.hostname === '127.0.0.1' ||
                                  window.location.protocol === 'file:';
 
@@ -43,7 +43,7 @@
         // Add version to CSS and script URLs to bust cache
         async function loadResources() {
             const version = await getLatestCommitHash();
-            
+
             // Add dynamic CSS
             const linkElement = document.createElement('link');
             linkElement.rel = 'stylesheet';
@@ -52,7 +52,7 @@
                 document.documentElement.classList.add('js-loaded');
             };
             document.head.appendChild(linkElement);
-            
+
             // Add dynamic script
             const scriptElement = document.createElement('script');
             scriptElement.src = `script.js?v=${version}`;
@@ -77,138 +77,95 @@
         window.addEventListener('load', loadResources);
     </script>
 </head>
-<body>
+<body class="calendar-page">
     <div class="container">
         <header>
             <h1>U.S. President Schedule</h1>
-            <p>Current U.S. President: <a href="https://en.wikipedia.org/wiki/Donald_Trump" target="_blank" rel="noopener noreferrer">Donald Trump</a></p>
+            <div class="header-stats">
+                <span class="header-stat-days"><span id="days-in-office-count">—</span> days in office</span>
+                <span class="header-stat-sep">·</span>
+                <span class="header-stat-maralago"><span id="maralago-count">—</span> Mar-a-Lago travel cost</span>
+                <span class="header-stat-sep header-stat-sep-golf">·</span>
+                <span class="header-stat-golf"><span id="golf-count">—</span> Trump property visits</span>
+                <span class="header-stat-sep header-stat-sep-lid">·</span>
+                <span class="header-stat-lid"><span id="lid-hours">—</span> hours under lid</span>
+            </div>
         </header>
 
         <div id="status" class="status-message loading">
             Loading events...
         </div>
-        <div class="stats-container" id="stats-container" style="display: none;">
-            <button id="stats-toggle" class="stats-toggle" title="Toggle statistics visibility">
-                <span class="stats-toggle-text">Show Top Statistics &nbsp;</span>
-                <span class="toggle-icon">▼</span>
-            </button>
-            <div class="stat-box">
-                <div class="stat-number" id="days-in-office-count">0</div>
-                <div class="stat-label">Days in office</div>
-                <div class="stat-detail">Since Jan 20, 2025</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number" id="maralago-count">$0</div>
-                <div class="stat-label">Mar-a-Lago Travel Cost</div>
-                <div class="stat-detail">$3.4M per round trip<sup>1</sup></div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number" id="golf-count">0</div>
-                <div class="stat-label">Trump Property<sup>2</sup> Visits</div>
-                <div class="stat-detail">Excluding Weekends & Holidays</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-number" id="lid-hours">0</div>
-                <div class="stat-label">Hours Under Lid<sup>3</sup></div>
-                <div class="stat-detail" id="lid-avg">Avg: 0h 0m per day</div>
-            </div>
-        </div>
 
-        <!-- From our blog Section -->
-        <div class="recent-analysis" id="recent-analysis">
-            <h2>From our blog</h2>
-            <ul class="recent-analysis-list">
-                <li class="recent-analysis-item">
-                    <a href="/blog/analyzing-presidential-schedules.html">
-                        <div class="recent-analysis-title">Analyzing Presidential Schedule Patterns: What the Data Reveals</div>
-                        <div class="recent-analysis-meta">Dec 18, 2025 • 5 min read</div>
-                    </a>
-                </li>
-                <li class="recent-analysis-item">
-                    <a href="/blog/mar-a-lago-travel-costs-explained.html">
-                        <div class="recent-analysis-title">Understanding Mar-a-Lago Travel Costs: Breaking Down the $3.4M Figure</div>
-                        <div class="recent-analysis-meta">Nov 28, 2025 • 6 min read</div>
-                    </a>
-                </li>
-                <li class="recent-analysis-item">
-                    <a href="/blog/understanding-white-house-lid-time.html">
-                        <div class="recent-analysis-title">What is 'Lid Time'? Understanding White House Press Operations</div>
-                        <div class="recent-analysis-meta">Nov 10, 2025 • 5 min read</div>
-                    </a>
-                </li>
-            </ul>
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="/blog/" style="color: var(--primary-color); text-decoration: none; font-weight: 500; font-size: 0.95rem;">Read more articles →</a>
-            </div>
-        </div>
-
-        <div class="event-filters" id="filters" style="display: none;">
-            <div class="search-container">
-                <div class="search-box">
-                    <input type="text" id="search" placeholder="Search events...">
-                    <button id="clear-search" class="clear-button" title="Clear search">×</button>
+        <div class="cal-body-layout">
+            <aside class="sidebar">
+                <div class="sidebar-content">
+                    <ul class="tips">
+                        <li style="font-weight: bold;">Tips:</li>
+                        <li>Enable automatic backup to save all data to your device every time you visit the site.</li>
+                        <li>Look out for a "More information" link to learn more about the event and see video clips, transcripts, and other data.</li>
+                        <li>The term "Lid" is used by the White House to describe when the President is not available to the press.</li>
+                    </ul>
+                    <ul class="footnotes">
+                        <li style="font-weight: bold;">Sources:</li>
+                        <li><sup>1</sup> Estimated round trip cost to Mar-a-Lago is based on a <a href="https://www.gao.gov/products/gao-19-178" target="_blank" rel="noopener noreferrer">2017 report by the U.S. Government Accountability Office</a>.</li>
+                        <li><sup>2</sup> A list of Trump-owned properties is available <a href="https://www.wsj.com/public/resources/documents/TrumpProperties.pdf" target="_blank" rel="noopener noreferrer">here</a>.</li>
+                        <li><sup>3</sup> Lid is a term used by the White House to describe when the President is not available to the press. It is a reference to the fact that the President is often in the 'Lid' when they are not available to the press.</li>
+                    </ul>
+                    <p class="timestamp" id="last-updated"></p>
                 </div>
-                <button id="search-btn">Search</button>
+
+                <footer class="site-footer">
+                    <div class="footer-links">
+                        <a href="/">Home</a>
+                        <a href="/blog/">Blog</a>
+                        <a href="/privacy.html">Privacy Policy</a>
+                        <a href="/about.html">About</a>
+                    </div>
+                    <p>&copy; 2024-2025 President Schedule. All rights reserved.</p>
+                </footer>
+            </aside>
+
+            <div class="cal-main">
+                <div class="calendar-nav" id="calendar-nav" style="display: none;">
+                    <div class="cal-nav-controls">
+                        <button id="cal-today-btn" class="cal-nav-btn cal-today-btn">Today</button>
+                        <button id="cal-prev-btn" class="cal-nav-btn cal-arrow-btn">&#8249;</button>
+                        <button id="cal-next-btn" class="cal-nav-btn cal-arrow-btn">&#8250;</button>
+                        <h2 id="cal-month-label" class="cal-month-label">Month Year</h2>
+                    </div>
+                    <div class="cal-nav-right">
+                        <div class="backup-container">
+                            <span id="backup-status" class="backup-status"></span>
+                            <button id="backup-btn" title="Toggle automatic backup">Auto Backup: OFF</button>
+                        </div>
+                        <div class="cal-nav-search">
+                            <div class="search-box">
+                                <input type="text" id="search" placeholder="Search events...">
+                                <button id="clear-search" class="clear-button" title="Clear search">×</button>
+                            </div>
+                            <button id="search-btn" hidden aria-hidden="true" tabindex="-1">Search</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="events">
+                    <!-- Events will be loaded here -->
+                </div>
+                <div class="cal-mobile-footer">
+                    <a href="/">Home</a>
+                    <a href="/blog/">Blog</a>
+                    <a href="/privacy.html">Privacy</a>
+                    <a href="/about.html">About</a>
+                </div>
             </div>
-            <div class="backup-container">
-                <span id="backup-status" class="backup-status"></span>
-                <button id="backup-btn" title="Toggle automatic backup">Auto Backup: OFF</button>
+        </div>
+
+        <div id="event-modal" class="event-modal" style="display: none;" role="dialog" aria-modal="true">
+            <div class="event-modal-backdrop"></div>
+            <div class="event-modal-content">
+                <button id="modal-close" class="modal-close-btn" aria-label="Close">&times;</button>
+                <div id="modal-body"></div>
             </div>
         </div>
-
-        <!-- Top Banner Ad (Below Stats) -->
-        <div class="ad-container ad-banner" id="top-banner-ad" style="display: none;">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-                 data-ad-slot="XXXXXXXXXX"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-        </div>
-
-        <div id="events">
-            <!-- Events will be loaded here -->
-        </div>
-
-        <div class="pagination" id="pagination" style="display: none;">
-            <button id="prev-btn" disabled>Previous</button>
-            <span id="page-info" class="page-info">Page 1</span>
-            <button id="next-btn">Next</button>
-        </div>
-
-        <!-- Bottom Banner Ad (Before Footer) -->
-        <div class="ad-container ad-banner" id="bottom-banner-ad" style="display: none;">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXXX"
-                 data-ad-slot="XXXXXXXXXX"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-        </div>
-
-        <ul class="tips">
-            <li style="font-weight: bold;">Tips:</li>
-            <li>Enable automatic backup to save all data to your device every time you visit the site.</li>
-            <li>Look out for a "More information" link to learn more about the event and see video clips, transcripts, and other data.</li>
-            <li>The term "Lid" is used by the White House to describe when the President is not available to the press.</li>
-        </ul>
-        <ul class="footnotes">
-            <li style="font-weight: bold;">Sources:</li>
-            <li><sup>1</sup> Estimated round trip cost to Mar-a-Lago is based on a <a href="https://www.gao.gov/products/gao-19-178" target="_blank" rel="noopener noreferrer">2017 report by the U.S. Government Accountability Office</a>.</li>
-            <li><sup>2</sup> A list of Trump-owned properties is available <a href="https://www.wsj.com/public/resources/documents/TrumpProperties.pdf" target="_blank" rel="noopener noreferrer">here</a>.</li>
-            <li><sup>3</sup> Lid is a term used by the White House to describe when the President is not available to the press. It is a reference to the fact that the President is often in the 'Lid' when they are not available to the press.</li>
-        </ul>
-        <p class="timestamp" id="last-updated"></p>
-
-        <footer class="site-footer">
-            <div class="footer-links">
-                <a href="/">Home</a>
-                <a href="/blog/">Blog</a>
-                <a href="/privacy.html">Privacy Policy</a>
-                <a href="/about.html">About</a>
-            </div>
-            <p>&copy; 2024-2025 President Schedule. All rights reserved.</p>
-        </footer>
     </div>
 </body>
 </html>
