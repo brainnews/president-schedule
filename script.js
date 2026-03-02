@@ -523,7 +523,21 @@ function initializeCalendarNav() {
     });
     document.getElementById('modal-close').addEventListener('click', closeEventModal);
     document.querySelector('.event-modal-backdrop').addEventListener('click', closeEventModal);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeEventModal(); });
+
+    // Info modal
+    const infoModal = document.getElementById('info-modal');
+    const openInfoModal = () => { infoModal.style.display = 'flex'; document.body.classList.add('modal-open'); };
+    const closeInfoModal = () => { infoModal.style.display = 'none'; document.body.classList.remove('modal-open'); };
+    document.getElementById('info-btn').addEventListener('click', openInfoModal);
+    document.getElementById('info-modal-close').addEventListener('click', closeInfoModal);
+    document.querySelector('.info-modal-backdrop').addEventListener('click', closeInfoModal);
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            closeEventModal();
+            closeInfoModal();
+        }
+    });
     window.addEventListener('resize', sizeCalendarToViewport);
 }
 

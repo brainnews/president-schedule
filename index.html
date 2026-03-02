@@ -80,7 +80,16 @@
 <body class="calendar-page">
     <div class="container">
         <header>
-            <h1>U.S. President Schedule</h1>
+            <div class="header-title">
+                <h1>U.S. President Schedule</h1>
+                <button id="info-btn" class="info-btn" aria-label="About this site" title="About this site">
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="7.5" cy="7.5" r="6.75" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M7.5 6.5v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        <circle cx="7.5" cy="4.5" r="0.75" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
             <div class="header-stats">
                 <span class="header-stat-days"><span id="days-in-office-count">—</span> days in office</span>
                 <span class="header-stat-sep">·</span>
@@ -97,22 +106,6 @@
         </div>
 
         <div class="cal-body-layout">
-            <aside class="sidebar">
-                <div class="sidebar-content">
-                    <ul class="tips">
-                        <li>Click any event to see details. Look for a "More information" link for video, transcripts, and more.</li>
-                        <li>"Lid" means the President is unavailable to the press for the rest of the day.</li>
-                        <li>Enable auto backup to save data to your device on each visit.</li>
-                    </ul>
-                    <ul class="footnotes">
-                        <li style="font-weight: bold;">Sources:</li>
-                        <li><sup>1</sup> Mar-a-Lago travel cost estimated at $3.4M per round trip per the <a href="https://www.gao.gov/products/gao-19-178" target="_blank" rel="noopener noreferrer">GAO (2017)</a>.</li>
-                        <li><sup>2</sup> Trump-owned properties list via <a href="https://www.wsj.com/public/resources/documents/TrumpProperties.pdf" target="_blank" rel="noopener noreferrer">WSJ</a>.</li>
-                    </ul>
-                    <p class="timestamp" id="last-updated"></p>
-                </div>
-            </aside>
-
             <div class="cal-main">
                 <div class="calendar-nav" id="calendar-nav" style="display: none;">
                     <div class="cal-nav-controls">
@@ -152,6 +145,25 @@
             <div class="event-modal-content">
                 <button id="modal-close" class="modal-close-btn" aria-label="Close">&times;</button>
                 <div id="modal-body"></div>
+            </div>
+        </div>
+
+        <div id="info-modal" class="event-modal" style="display: none;" role="dialog" aria-modal="true">
+            <div class="info-modal-backdrop event-modal-backdrop"></div>
+            <div class="event-modal-content info-modal-content">
+                <button id="info-modal-close" class="modal-close-btn" aria-label="Close">&times;</button>
+                <h3 class="modal-title">About</h3>
+                <ul class="info-tips">
+                    <li>Click any event to see details. Look for a "More information" link for video, transcripts, and more.</li>
+                    <li>"Lid" means the President is unavailable to the press for the rest of the day.</li>
+                    <li>Enable auto backup in the nav bar to save data to your device on each visit.</li>
+                </ul>
+                <p class="info-sources-label">Sources</p>
+                <ul class="info-footnotes">
+                    <li><sup>1</sup> Mar-a-Lago travel cost estimated at $3.4M per round trip per the <a href="https://www.gao.gov/products/gao-19-178" target="_blank" rel="noopener noreferrer">GAO (2017)</a>.</li>
+                    <li><sup>2</sup> Trump-owned properties list via <a href="https://www.wsj.com/public/resources/documents/TrumpProperties.pdf" target="_blank" rel="noopener noreferrer">WSJ</a>.</li>
+                </ul>
+                <p class="timestamp" id="last-updated"></p>
             </div>
         </div>
     </div>
