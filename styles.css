@@ -1682,13 +1682,20 @@ body.modal-open {
     .cal-more-btn {
         font-size: 0.62rem;
     }
+    .cal-event-pill {
+        background-color: color-mix(in srgb, var(--event-color, #64748b) 22%, transparent);
+        gap: 0;
+        padding: 2px 4px;
+    }
+    .cal-event-pill:hover {
+        background-color: color-mix(in srgb, var(--event-color, #64748b) 38%, transparent);
+    }
+    .cal-event-dot {
+        display: none;
+    }
     .cal-header-cell {
         font-size: 0.62rem;
         padding: 6px 4px;
-    }
-    .cal-event-dot {
-        width: 6px;
-        height: 6px;
     }
 
 

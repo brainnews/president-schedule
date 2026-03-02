@@ -459,7 +459,7 @@ function renderCalendar() {
                 const timePrefix = event.timeStart ? formatTime(event.timeStart) + ' ' : '';
                 const label = timePrefix + getEventDisplayTitle(event);
                 const safeLabel = label.replace(/"/g, '&quot;');
-                html += `<button class="cal-event-pill" data-date="${dateKey}" data-idx="${idx}" title="${safeLabel}">` +
+                html += `<button class="cal-event-pill" data-date="${dateKey}" data-idx="${idx}" style="--event-color:${color};" title="${safeLabel}">` +
                     `<span class="cal-event-dot" style="background-color:${color};"></span>` +
                     `<span class="cal-pill-text">${label}</span>` +
                     `</button>`;
