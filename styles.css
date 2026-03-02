@@ -1781,20 +1781,6 @@ body.modal-open {
         margin: 0 4px;
     }
 
-    /* Dots-only mode: hide pill text, center dot */
-    .cal-pill-text {
-        display: none;
-    }
-    .cal-event-pill {
-        justify-content: center;
-        padding: 3px 2px;
-        gap: 0;
-    }
-    .cal-event-dot {
-        width: 8px;
-        height: 8px;
-    }
-
     /* Tighter modal padding */
     .event-modal-content {
         padding: 16px 14px 20px;
