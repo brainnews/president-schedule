@@ -1638,6 +1638,10 @@ body.modal-open {
     .cal-nav-controls {
         flex-shrink: 0;
     }
+    /* Hide backup on mobile — secondary feature */
+    .cal-nav-right .backup-container {
+        display: none;
+    }
     /* Push search to second row, full width */
     .cal-nav-right {
         order: 10;
