@@ -666,7 +666,6 @@ h1 {
     gap: 12px;
     padding: 8px 16px;
     flex-shrink: 0;
-    border-bottom: 1px solid var(--border-color);
     background: var(--background-color);
 }
 .cal-nav-controls {
