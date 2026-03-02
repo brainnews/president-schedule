@@ -1193,11 +1193,6 @@ body.modal-open {
     margin-top: 2px;
 }
 
-/* ===== Mobile footer (hidden on desktop, shown inside cal-main on mobile) ===== */
-.cal-mobile-footer {
-    display: none;
-}
-
 /* Make sure it works on mobile */
 @media (max-width: 768px) {
     .ad-banner,
@@ -1696,24 +1691,6 @@ body.modal-open {
         height: 6px;
     }
 
-    /* Mobile footer: show inside cal-main */
-    .cal-mobile-footer {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 6px 12px;
-        border-top: 1px solid var(--border-color);
-        background: var(--secondary-color);
-        flex-shrink: 0;
-    }
-    .cal-mobile-footer a {
-        font-size: 0.75rem;
-        color: var(--muted-text-color);
-        text-decoration: none;
-    }
-    .cal-mobile-footer a:hover {
-        color: var(--text-color);
-    }
 
     /* Modal: bottom sheet */
     .event-modal {
