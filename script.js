@@ -456,8 +456,8 @@ function renderCalendar() {
 
             visibleEvents.forEach((event, idx) => {
                 const color = getSourceColor(event.type);
-                const timePrefix = event.timeStart ? formatTime(event.timeStart) + ' ' : '';
-                const label = timePrefix + getEventDisplayTitle(event);
+                const timeSuffix = event.timeStart ? ' ' + formatTime(event.timeStart) : '';
+                const label = getEventDisplayTitle(event) + timeSuffix;
                 const safeLabel = label.replace(/"/g, '&quot;');
                 html += `<button class="cal-event-pill" data-date="${dateKey}" data-idx="${idx}" style="--event-color:${color};" title="${safeLabel}">` +
                     `<span class="cal-event-dot" style="background-color:${color};"></span>` +
